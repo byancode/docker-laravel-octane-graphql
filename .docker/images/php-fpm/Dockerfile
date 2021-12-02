@@ -3,7 +3,7 @@ FROM fedora:35 as builder
 
 WORKDIR /var/www
 
-ARG TIMEZONE=UTC
+ARG TIMEZONE UTC
 RUN ln -snf /usr/share/zoneinfo/$TIMEZONE /etc/localtime && echo $TIMEZONE > /etc/timezone
 
 RUN dnf -y update
