@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -e
+
+initialStuff() {
+    php artisan event:cache; \
+    php artisan config:cache; \
+    php artisan route:cache;
+}
+
+if [ "$1" != "" ]; then
+    exec "$@"
+else
+    # initialStuff
+    # /etc/cron.d/schedule > /dev/null 2>&1
+    /usr/bin/php /var/www/artisan octane:start --server="swoole" --host=0.0.0.0 --port=8000
+fi
