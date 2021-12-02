@@ -121,7 +121,7 @@ services:
         expose:
             - "1025"
         ports:
-            - ${MAILHOG_PORT}:8025
+            - ${MAILHOG_PORT:-8025}:8025
 
     echo-server:
         restart: unless-stopped
