@@ -1,6 +1,7 @@
 #!/bin/bash
 
-source ${LARADHOC_BASE_PATH}/.laradhoc
+source ${LARADHOC_BASE_PATH}/.env
+
 
 KEY_PATH="${LARADHOC_BASE_PATH}/.docker/images/nginx/ssl"
 

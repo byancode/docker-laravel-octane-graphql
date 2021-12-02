@@ -25,13 +25,13 @@ if ! docker info > /dev/null 2>&1; then
     exit 1
 fi
 
-Ensure .env has been created
-if [ ! -f ${LARADHOC_BASE_PATH}/.laradhoc ]; then
-    echo -e "${ERROR}.laradhoc not found!${NC}\n" >&2
+# Ensure .env has been created
+if [ ! -f ${LARADHOC_BASE_PATH}/.env ]; then
+    echo -e "${ERROR}.env not found!${NC}\n" >&2
     exit 1
 fi
 
-source ${LARADHOC_BASE_PATH}/.laradhoc
+source ${LARADHOC_BASE_PATH}/.env
 
 # Ensure containers are running
 PSRESULT="$(docker-compose --project-directory ${LARADHOC_BASE_PATH} -p $CONTAINER_PREFIX ps -q)"
@@ -97,11 +97,6 @@ if [ "$COMMAND" == "init" ]; then
     elif [ "$COMMAND" == "php" ]; then
     check_if_is_running
     docker exec -u 0 -it ${CONTAINER_PREFIX}_php-fpm $@
-    elif [ "$COMMAND" == "fix" ]; then
-    check_if_is_running
-    docker exec -u 0 -it ${CONTAINER_PREFIX}_php-fpm chown -R www:www vendor
-    docker exec -u 0 -it ${CONTAINER_PREFIX}_php-fpm chown -R www:www storage
-    docker exec -u 0 -it ${CONTAINER_PREFIX}_php-fpm php artisan storage:link
 else
     echo -e "\n${ERROR}Command '$COMMAND' not defined.${NC}\n"
 fi

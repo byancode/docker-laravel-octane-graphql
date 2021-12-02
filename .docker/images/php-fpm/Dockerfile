@@ -1,3 +1,4 @@
+
 FROM fedora:35 as builder
 
 WORKDIR /var/www
@@ -67,7 +68,7 @@ RUN sed -e 's/opcache.enable_cli=0/opcache.enable_cli=${ENABLE_OPCACHE}/' -i /et
 RUN chmod +x /usr/local/bin/entrypoint
 RUN chmod +x /etc/cron.d/schedule
 
-ARG OCTANE_SERVER "swoole"
+ARG OCTANE_SERVER    swoole
 RUN sed -e 's/server=swoole/server=${OCTANE_SERVER}/' -i /etc/supervisord.conf
 
 CMD php-fpm
