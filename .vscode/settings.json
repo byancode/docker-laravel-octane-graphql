@@ -1,0 +1,25 @@
+{
+    "files.exclude": {
+        ".editorconfig": true,
+        ".env.example": true,
+        ".gitattributes": true,
+        ".styleci.yml": true,
+        ".vscode": true,
+        "**/node_modules": true,
+        "**/package-lock.json": true,
+        "**/yarn.lock": true,
+        "artisan": true,
+        "bin": true,
+        "bootstrap": true,
+        "ca-certificate.crt": true,
+        "CHANGELOG.md": true,
+        "composer.lock": true,
+        "database/seeders": true,
+        "LICENSE": true,
+        "media": true,
+        "phpunit.xml": true,
+        "public": true,
+        "server.php": true,
+        "tests": true
+    }
+}
