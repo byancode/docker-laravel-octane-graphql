@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # The app name
 APP_NAME="Laradhoc"
 # The app hostname
