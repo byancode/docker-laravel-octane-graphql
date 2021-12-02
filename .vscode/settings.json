@@ -9,7 +9,6 @@
         "**/package-lock.json": true,
         "**/yarn.lock": true,
         "artisan": true,
-        "bin": true,
         "bootstrap": true,
         "ca-certificate.crt": true,
         "CHANGELOG.md": true,

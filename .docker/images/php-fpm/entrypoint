@@ -10,7 +10,6 @@ initialStuff() {
 if [ "$1" != "" ]; then
     exec "$@"
 else
-    # initialStuff
-    # /etc/cron.d/schedule > /dev/null 2>&1
-    /usr/bin/php /var/www/artisan octane:start --server="swoole" --host=0.0.0.0 --port=8000
+    initialStuff
+    supervisord -n -c /etc/supervisor/supervisord.conf
 fi

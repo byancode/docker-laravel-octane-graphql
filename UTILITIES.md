@@ -4,7 +4,7 @@
 
 ```bash
 # ejecutar en consola del projecto
-source ./aliases
+source ./bin/aliases
 ```
 
 > ejemplo de alias a utilizar

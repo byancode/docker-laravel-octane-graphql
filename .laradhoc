@@ -1,0 +1,92 @@
+# The app name
+APP_NAME="Laradhoc"
+# The app hostname
+APP_HOST=laradhoc.test
+# Path of your codebase (without trailing slash)
+APP_SRC=.
+
+TIMEZONE=UTC
+
+# Prefix for all container names. Don't use spaces.
+CONTAINER_PREFIX=laradhoc
+
+# Set to 1 to enable HTTPS, 0 to run only over HTTP
+NGINX_ENABLE_HTTPS=1
+# Port on which Nginx is listening
+NGINX_PORT_80=80
+# Port on which Nginx is listening (HTTPS)
+NGINX_PORT_443=443
+
+
+# Specify which PHP version to use
+#
+# Supported values:
+#   7.4
+#   8.0
+#   8.1
+#
+PHP_VERSION=8.0
+
+# Specify a Docker image for your database (MySQL or MariaDB)
+#
+# Supported values:
+#   mysql
+#   mariadb
+#
+# You can specify a valid tag
+#
+# Please see https://hub.docker.com/_/mysql and https://hub.docker.com/_/mariadb
+# for valid tags.
+#
+# Examples:
+#   mysql
+#   mariadb
+#   mysql:8
+#   mysql:latest
+#   mariadb:10.3
+#
+DATABASE_IMAGE=mysql:latest
+DATABASE_HOST="database"
+DATABASE_DATABASE="laradhoc"
+DATABASE_USERNAME="user"
+DATABASE_PASSWORD="password"
+DATABASE_ROOT_USERNAME="root"
+DATABASE_ROOT_PASSWORD="password"
+
+
+# MySQL / MariaDB PORT
+MYSQL_PORT=3306
+MYSQL_DATABASE="${DATABASE_DATABASE}"
+MYSQL_USER="${DATABASE_USERNAME}"
+MYSQL_PASSWORD="${DATABASE_PASSWORD}"
+MYSQL_ROOT_PASSWORD="${DATABASE_ROOT_PASSWORD}"
+
+# Port on which phpMyAdmin is listening
+PHPMYADMIN_PORT=8080
+
+
+# MongoDB
+MONGODB_PORT=27017
+MONGODB_ROOT_USER="${DATABASE_ROOT_USERNAME}"
+MONGODB_ROOT_PASSWORD="${DATABASE_ROOT_PASSWORD}"
+MONGODB_DATABASE="${DATABASE_DATABASE}"
+MONGODB_USER="${DATABASE_USERNAME}"
+MONGODB_PASSWORD="${DATABASE_PASSWORD}"
+
+
+# Set to 1 to enable XDebug
+ENABLE_XDEBUG=1
+
+REDIS_PORT=6379
+
+# Port on which MailHog replies (SMTP server for development purpose: https://github.com/mailhog/MailHog)
+MAILHOG_PORT=8081
+
+
+# Set to 1 to enable OPCACHE
+ENABLE_OPCACHE=1
+
+# Laravel Octane
+OCTANE_SERVER="swoole"
+# Set to 1 to enable HTTPS on Octane
+OCTANE_HTTPS=1
