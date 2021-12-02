@@ -1,5 +1,7 @@
 #!/bin/bash
 source ${LARADHOC_BASE_PATH}/.laradhoc
-mkdir -p ${LARADHOC_BASE_PATH}/$APP_SRC
-${LARADHOC_BASE_PATH}/.docker/scripts/composer create-project --prefer-dist laravel/laravel .
+mkdir -p ${LARADHOC_BASE_PATH}/$APP_SRC/tmp
+${LARADHOC_BASE_PATH}/.docker/scripts/composer create-project --prefer-dist laravel/laravel ./tmp
+cp -Ra ${LARADHOC_BASE_PATH}/$APP_SRC/tmp/. ${LARADHOC_BASE_PATH}/$APP_SRC
+rm -rf ${LARADHOC_BASE_PATH}/$APP_SRC/tmp/.
 ${LARADHOC_BASE_PATH}/.docker/scripts/init-laravel --new
