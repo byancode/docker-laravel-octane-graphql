@@ -1,4 +1,3 @@
-ARG PHP_VERSION
 FROM fedora:35 as builder
 
 WORKDIR /var/www
@@ -12,7 +11,7 @@ RUN dnf -y install http://rpms.remirepo.net/fedora/remi-release-35.rpm
 RUN dnf -y install dnf-plugins-core
 RUN dnf config-manager --set-enabled remi
 RUN dnf module reset php
-ARG PHP_VERSION
+ARG PHP_VERSION 8.0
 RUN dnf -y module install php:remi-${PHP_VERSION}
 RUN dnf -y install \
     php \
