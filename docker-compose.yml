@@ -100,6 +100,10 @@ services:
                 - OCTANE_SERVER=${OCTANE_SERVER}
                 - ENABLE_XDEBUG=${ENABLE_XDEBUG}
                 - ENABLE_OPCACHE=${ENABLE_OPCACHE}
+                - PHP_MAX_EXECUTION_TIME=${PHP_MAX_EXECUTION_TIME}
+                - PHP_UPLOAD_MAX_FILESIZE=${PHP_UPLOAD_MAX_FILESIZE}
+                - PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT}
+                - PHP_POST_MAX_SIZE=${PHP_POST_MAX_SIZE}
         volumes:
             - ${APP_SRC}:/var/www/:cached
 
@@ -143,9 +147,6 @@ services:
         volumes:
             - ${APP_SRC:-.}:/var/www:cached
 
-networks:
-    laradhoc:
-        driver: bridge
 volumes:
     sql-data: null
     mongodb-data: null
