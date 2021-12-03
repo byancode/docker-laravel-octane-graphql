@@ -3,6 +3,10 @@ source ${LARADHOC_BASE_PATH}/.laradhoc
 mkdir -p ${LARADHOC_BASE_PATH}/$APP_SRC/tmp
 docker run -it -v ${LARADHOC_BASE_PATH}/$APP_SRC/tmp:/app composer:2.0 composer create-project --no-interaction --ignore-platform-reqs --prefer-dist laravel/laravel .
 docker run -it -v ${LARADHOC_BASE_PATH}/$APP_SRC/tmp:/app composer:2.0 composer require  --ignore-platform-reqs --no-interaction laravel/octane spiral/roadrunner rebing/graphql-laravel
+
+docker run -it -v ${LARADHOC_BASE_PATH}/$APP_SRC/tmp:/app composer:2.0 php artisan octane:install --no-interaction --server ${OCTANE_SERVER}
+docker run -it -v ${LARADHOC_BASE_PATH}/$APP_SRC/tmp:/app composer:2.0 php artisan vendor:publish --provider="Rebing\GraphQL\GraphQLServiceProvider"
+
 cp -Ra ${LARADHOC_BASE_PATH}/$APP_SRC/tmp/. ${LARADHOC_BASE_PATH}/$APP_SRC
 rm -rf ${LARADHOC_BASE_PATH}/$APP_SRC/tmp
 ${LARADHOC_BASE_PATH}/.docker/scripts/init-laravel --new
