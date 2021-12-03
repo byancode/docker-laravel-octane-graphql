@@ -3,6 +3,10 @@ map $http_upgrade $connection_upgrade {
     ''      close;
 }
 
+upstream backend {
+    server php-fpm:8000;
+}
+
 server {
     listen 443 ssl http2 default_server;
     listen [::]:443 ssl http2 default_server;
