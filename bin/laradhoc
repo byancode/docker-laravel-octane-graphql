@@ -26,12 +26,14 @@ if ! docker info > /dev/null 2>&1; then
 fi
 
 # Ensure .env has been created
-if [ ! -f ${LARADHOC_BASE_PATH}/.env ]; then
+if [ ! -f ${LARADHOC_BASE_PATH}/.laradhoc ]; then
     echo -e "${ERROR}.env not found!${NC}\n" >&2
     exit 1
 fi
 
-source ${LARADHOC_BASE_PATH}/.env
+cp -f ${LARADHOC_BASE_PATH}/.laradhoc ${LARADHOC_BASE_PATH}/bin/.env
+
+source ${LARADHOC_BASE_PATH}/bin/.env
 
 # Ensure containers are running
 PSRESULT="$(docker-compose --project-directory ${LARADHOC_BASE_PATH} -p $CONTAINER_PREFIX ps -q)"

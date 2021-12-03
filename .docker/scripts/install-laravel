@@ -1,5 +1,5 @@
 #!/bin/bash
-source ${LARADHOC_BASE_PATH}/.env
+source ${LARADHOC_BASE_PATH}/bin/.env
 mkdir -p ${LARADHOC_BASE_PATH}/$APP_SRC/tmp
 docker run -it -v ${LARADHOC_BASE_PATH}/$APP_SRC/tmp:/app composer:2.0 composer create-project --no-interaction --ignore-platform-reqs --prefer-dist laravel/laravel .
 cp -Ra ${LARADHOC_BASE_PATH}/$APP_SRC/tmp/. ${LARADHOC_BASE_PATH}/$APP_SRC
