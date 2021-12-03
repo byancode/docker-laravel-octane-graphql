@@ -36,7 +36,7 @@ server {
     error_log  /var/log/nginx/${APP_HOST}-error.log error;
     error_page 404 /index.php;
 
-    location / {
+    location @octane {
         set $suffix "";
 
         if ($uri = /index.php) {
