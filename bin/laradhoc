@@ -56,6 +56,8 @@ SCRIPTS_DIR=${LARADHOC_BASE_PATH}/.docker/scripts/
 
 if [ "$COMMAND" == "init" ]; then
     ${SCRIPTS_DIR}init
+    elif [ "$COMMAND" == "install" ]; then
+    ${SCRIPTS_DIR}install-laravel
     elif [ "$COMMAND" == "build" ]; then
     ${SCRIPTS_DIR}start --build
     elif [ "$COMMAND" == "init-laravel" ]; then
