@@ -50,10 +50,10 @@ ENV PHP_MAX_EXECUTION_TIME      600
 ENV PHP_POST_MAX_SIZE           8M
 ENV PHP_MEMORY_LIMIT            512M
 
-RUN sed -e 's/max_execution_time = 30/max_execution_time = ${PHP_MAX_EXECUTION_TIME}/' -i /etc/php.ini
-RUN sed -e 's/upload_max_filesize = 2M/upload_max_filesize = ${PHP_UPLOAD_MAX_FILESIZE}/' -i /etc/php.ini
-RUN sed -e 's/memory_limit = 128M/memory_limit = ${PHP_MEMORY_LIMIT}/' -i /etc/php.ini
-RUN sed -e 's/post_max_size = 8M/post_max_size = ${PHP_POST_MAX_SIZE}/' -i /etc/php.ini
+RUN sed -e 's/max_execution_time = 30/max_execution_time = '$PHP_MAX_EXECUTION_TIME'/' -i /etc/php.ini
+RUN sed -e 's/upload_max_filesize = 2M/upload_max_filesize = '$PHP_UPLOAD_MAX_FILESIZE'/' -i /etc/php.ini
+RUN sed -e 's/memory_limit = 128M/memory_limit = '$PHP_MEMORY_LIMIT'/' -i /etc/php.ini
+RUN sed -e 's/post_max_size = 8M/post_max_size = '$PHP_POST_MAX_SIZE'/' -i /etc/php.ini
 
 COPY ./schedule /etc/cron.d/schedule
 COPY ./opcache.ini /etc/php.d/*-opcache.ini
@@ -62,8 +62,8 @@ COPY ./supervisord.conf /etc/supervisord.conf
 COPY ./entrypoint /usr/local/bin/entrypoint
 
 ARG ENABLE_OPCACHE 1
-RUN sed -e 's/opcache.enable=0/opcache.enable=${ENABLE_OPCACHE}/' -i /etc/php.d/*-opcache.ini
-RUN sed -e 's/opcache.enable_cli=0/opcache.enable_cli=${ENABLE_OPCACHE}/' -i /etc/php.d/*-opcache.ini
+RUN sed -e 's/opcache.enable=0/opcache.enable='$ENABLE_OPCACHE'/' -i /etc/php.d/*-opcache.ini
+RUN sed -e 's/opcache.enable_cli=0/opcache.enable_cli='$ENABLE_OPCACHE'/' -i /etc/php.d/*-opcache.ini
 
 RUN chmod +x /usr/local/bin/entrypoint
 RUN chmod +x /etc/cron.d/schedule
