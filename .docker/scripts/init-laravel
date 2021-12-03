@@ -8,6 +8,10 @@ TARGET_ENV="${_APP_SRC}/.env.production"
 # Laravel .env.example file
 TARGET_ENV_EXAMPLE="${_APP_SRC}/.env.example"
 
+if [ ! -f ${TARGET_ENV} ] ; then
+    cp -f ${TARGET_ENV_EXAMPLE} ${TARGET_ENV}
+fi
+
 if [ "$1" != "--new" ] ; then
     # Existing project: check for .env file
     cp -f ${TARGET_ENV_EXAMPLE} ${TARGET_ENV} 2>/dev/null
@@ -54,4 +58,4 @@ fi
 
 ${LARADHOC_BASE_PATH}/.docker/scripts/artisan config:clear
 
-cp -f $TARGET_ENV ${LARADHOC_BASE_PATH}/.env
+cp -f ${TARGET_ENV} ${LARADHOC_BASE_PATH}/.env
