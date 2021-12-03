@@ -1,2 +1,6 @@
 #!/bin/bash
-php make:graphql:$@
+SCRIPT=`realpath $0`
+SCRIPT_PATH=`dirname $SCRIPT`
+BASE_PATH=`dirname $SCRIPT_PATH`
+
+php ${BASE_PATH}/artisan make:graphql:$@

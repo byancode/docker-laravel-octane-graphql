@@ -1,7 +1,10 @@
 #!/bin/bash
-alias laradhoc="./bin/laradhoc"
-alias artisan="php artisan"
-alias graphql="./graphql"
-alias art="php artisan"
-alias gql="./graphql"
-alias lh="./bin/laradhoc"
+SCRIPT=`realpath $0`
+SCRIPT_PATH=`dirname $SCRIPT`
+
+alias laradhoc=$SCRIPT_PATH"/bin/laradhoc"
+alias artisan="php "$SCRIPT_PATH"/artisan"
+alias graphql=$SCRIPT_PATH"/bin/graphql"
+alias art="php "$SCRIPT_PATH"/artisan"
+alias gql=$SCRIPT_PATH"/bin/graphql"
+alias lh=$SCRIPT_PATH"/bin/laradhoc"
