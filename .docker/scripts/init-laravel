@@ -49,8 +49,6 @@ echo "${ENV_FILE}" > ${TARGET_ENV}
 if [ "$1" != "--new" ] ; then
   # Existing project: install composer dependencies, generate a key
   ${LARADHOC_BASE_PATH}/.docker/scripts/composer install --ignore-platform-reqs
-  ${LARADHOC_BASE_PATH}/.docker/scripts/composer require --ignore-platform-reqs --no-interaction laravel/octane spiral/roadrunner
-  ${LARADHOC_BASE_PATH}/.docker/scripts/composer require --ignore-platform-reqs --no-interaction rebing/graphql-laravel
   ${LARADHOC_BASE_PATH}/.docker/scripts/composer dump-autoload
   ${LARADHOC_BASE_PATH}/.docker/scripts/artisan key:generate
   ${LARADHOC_BASE_PATH}/.docker/scripts/artisan octane:install --no-interaction --server ${OCTANE_SERVER}
