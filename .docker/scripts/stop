@@ -1,3 +1,3 @@
 #!/bin/bash
-source ${LARADHOC_BASE_PATH}/bin/.env
-docker-compose --project-directory ${LARADHOC_BASE_PATH} --project-name "$CONTAINER_PREFIX" down
+source ${LARADHOC_BASE_PATH}/.laradhoc
+docker-compose --env-file ${LARADHOC_BASE_PATH}/.laradhoc --project-directory ${LARADHOC_BASE_PATH} --project-name "$CONTAINER_PREFIX" down

@@ -27,17 +27,15 @@ fi
 
 # Ensure .env has been created
 if [ ! -f ${LARADHOC_BASE_PATH}/.laradhoc ]; then
-    echo -e "${ERROR}.env not found!${NC}\n" >&2
+    echo -e "${ERROR}.laradhoc not found!${NC}\n" >&2
     exit 1
 fi
 
-cp -f ${LARADHOC_BASE_PATH}/.laradhoc ${LARADHOC_BASE_PATH}/bin/.env
-
-source ${LARADHOC_BASE_PATH}/bin/.env
+source ${LARADHOC_BASE_PATH}/.laradhoc
 
 # Ensure containers are running
 PSRESULT="$(docker-compose --project-directory ${LARADHOC_BASE_PATH} -p $CONTAINER_PREFIX ps -q)"
-if ! docker-compose --project-directory ${LARADHOC_BASE_PATH} -p $CONTAINER_PREFIX ps &> /dev/null; then
+if ! docker-compose --env-file ${LARADHOC_BASE_PATH}/.laradhoc --project-directory ${LARADHOC_BASE_PATH} -p $CONTAINER_PREFIX ps &> /dev/null; then
     EXEC="no"
     elif [ -n "$PSRESULT" ]; then
     EXEC="yes"
@@ -88,7 +86,7 @@ if [ "$COMMAND" == "init" ]; then
     ${SCRIPTS_DIR}phpunit $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
     elif [ "$COMMAND" == "ps" ]; then
     check_if_is_running
-    docker-compose --project-directory ${LARADHOC_BASE_PATH} -p $CONTAINER_PREFIX ps
+    docker-compose --env-file ${LARADHOC_BASE_PATH}/.laradhoc --project-directory ${LARADHOC_BASE_PATH} -p $CONTAINER_PREFIX ps
     elif [ "$COMMAND" == "nah" ]; then
     check_if_is_running
     ${SCRIPTS_DIR}nah

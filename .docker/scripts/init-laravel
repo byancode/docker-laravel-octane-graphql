@@ -1,5 +1,5 @@
 #!/bin/bash
-source ${LARADHOC_BASE_PATH}/bin/.env
+source ${LARADHOC_BASE_PATH}/.laradhoc
 
 _APP_SRC=${LARADHOC_BASE_PATH}/${APP_SRC}
 

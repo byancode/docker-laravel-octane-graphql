@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ${LARADHOC_BASE_PATH}/bin/.env
+source ${LARADHOC_BASE_PATH}/.laradhoc
 
 
 KEY_PATH="${LARADHOC_BASE_PATH}/.docker/images/nginx/ssl"
@@ -19,4 +19,4 @@ if [ $NGINX_ENABLE_HTTPS == 1 ] ; then
     -keyout ${KEY_PATH}/${APP_HOST}.key 2>/dev/null
 fi
 
-docker-compose --project-directory ${LARADHOC_BASE_PATH} --project-name "$CONTAINER_PREFIX" up -d --build $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+docker-compose --env-file ${LARADHOC_BASE_PATH}/.laradhoc --project-directory ${LARADHOC_BASE_PATH} --project-name "$CONTAINER_PREFIX" up -d --build $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
