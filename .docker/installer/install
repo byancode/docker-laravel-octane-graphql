@@ -1,0 +1,15 @@
+composer create-project \
+--ignore-platform-reqs \
+--no-interaction \
+--prefer-dist \
+laravel/laravel .
+
+composer require \
+--ignore-platform-reqs \
+--no-interaction \
+laravel/octane \
+spiral/roadrunner \
+rebing/graphql-laravel
+
+php artisan octane:install --no-interaction --server ${OCTANE_SERVER}
+php artisan vendor:publish --provider="Rebing\GraphQL\GraphQLServiceProvider"

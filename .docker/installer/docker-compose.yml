@@ -1,0 +1,11 @@
+version: "3.2"
+services:
+    composer:
+        user: $(id -u):$(id -g)
+        build:
+            context: .
+            dockerfile: Dockerfile
+        working_dir: /app
+        environment:
+            - OCTANE_SERVER=${OCTANE_SERVER}
+        entrypoint: [ "./install" ]
