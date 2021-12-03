@@ -4,7 +4,7 @@ source ${LARADHOC_BASE_PATH}/.env
 _APP_SRC=${LARADHOC_BASE_PATH}/${APP_SRC}
 
 # Laravel .env file
-TARGET_ENV="${_APP_SRC}/.env"
+TARGET_ENV="${_APP_SRC}/.env.production"
 # Laravel .env.example file
 TARGET_ENV_EXAMPLE="${_APP_SRC}/.env.example"
 
@@ -58,3 +58,5 @@ if [ "$1" != "--new" ] ; then
 fi
 
 ${LARADHOC_BASE_PATH}/.docker/scripts/artisan config:clear
+
+cp -f $TARGET_ENV ${LARADHOC_BASE_PATH}/.env
