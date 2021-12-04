@@ -1,1 +1,2 @@
-FROM phpmyadmin/phpmyadmin:4.7
+ARG PHPMYADMIN_VERSION=4.7
+FROM phpmyadmin/phpmyadmin:$PHPMYADMIN_VERSION

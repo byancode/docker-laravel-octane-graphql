@@ -1,4 +1,7 @@
 #!/bin/bash
 source ${LARADHOC_BASE_PATH}/.laradhoc
-docker-compose --env-file ${LARADHOC_BASE_PATH}/.laradhoc --project-directory ${LARADHOC_BASE_PATH} -p $CONTAINER_PREFIX exec php-fpm composer $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+
+${LARADHOC_BASE_PATH}/bin/environment
+
+docker-compose --env-file ${LARADHOC_BASE_PATH}/bin/.env --project-directory ${LARADHOC_BASE_PATH} -p $CONTAINER_PREFIX exec php-fpm composer $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
 

@@ -1,3 +1,27 @@
 #!/bin/bash
+
+DEV=false
+PROD=false
+TEST=false
+TESTING=false
+PRODUCTION=false
+DEVELOPMENT=false
+echo "$1"
+if [ "$1" == "--prod" ] || [ "$1" == "--production" ]; then
+    PROD=true
+    PRODUCTION=true
+fi
+if [ "$1" == "--test" ] || [ "$1" == "--testing" ]; then
+    TEST=true
+    TESTING=true
+fi
+if [ "$1" == "--dev" ] || [ "$1" == "--development" ]; then
+    DEV=true
+    DEVELOPMENT=true
+fi
+
 source ${LARADHOC_BASE_PATH}/.laradhoc
-docker-compose --env-file ${LARADHOC_BASE_PATH}/.laradhoc --project-directory ${LARADHOC_BASE_PATH} --project-name "$CONTAINER_PREFIX" up -d $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+
+${LARADHOC_BASE_PATH}/bin/environment
+
+docker-compose --env-file ${LARADHOC_BASE_PATH}/bin/.env --project-directory ${LARADHOC_BASE_PATH} --project-name "$CONTAINER_PREFIX" up -d $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}

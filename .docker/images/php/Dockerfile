@@ -71,7 +71,7 @@ RUN chmod +x /etc/cron.d/schedule
 ARG OCTANE_SERVER    swoole
 RUN sed -e 's/server=swoole/server='$OCTANE_SERVER'/' -i /etc/supervisord.conf
 
-CMD php-fpm
+CMD ["php-fpm"]
 
 EXPOSE 9000
 
