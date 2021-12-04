@@ -6,6 +6,8 @@ SCRIPT=`realpath $0`
 SCRIPT_PATH=`dirname $SCRIPT`
 export LARADHOC_BASE_PATH=`dirname $SCRIPT_PATH`
 
+${SCRIPT_PATH}/aliases
+
 source ${LARADHOC_BASE_PATH}/.docker/scripts/common/colors
 
 echo -e "\n${WHITE}Laradhoc ${INFO}${LARADHOC_VERSION}${NC}\n" >&2

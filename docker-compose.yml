@@ -1,8 +1,8 @@
 version: '3.2'
 services:
-    database:
+    mysql:
         restart: unless-stopped
-        container_name: ${CONTAINER_PREFIX}_database
+        container_name: ${CONTAINER_PREFIX}_mysql
         tty: true
         command:
             [
@@ -13,7 +13,7 @@ services:
         build:
             context: ./.docker/images/mysql
             args:
-                - DATABASE_IMAGE=${DATABASE_IMAGE}
+                - MYSQL_IMAGE=${MYSQL_IMAGE}
         environment:
             MYSQL_DATABASE: ${MYSQL_DATABASE}
             MYSQL_USER: ${MYSQL_USER}
@@ -43,7 +43,7 @@ services:
         ports:
             - ${PHPMYADMIN_PORT:-8080}:80
         depends_on:
-            - database
+            - mysql
 
     mongodb:
         restart: unless-stopped
@@ -84,15 +84,15 @@ services:
             - ${NGINX_PORT_80:-80}:80
             - ${NGINX_PORT_443:-443}:443
         depends_on:
-            - php-fpm
+            - php
 
-    php-fpm:
-        container_name: ${CONTAINER_PREFIX}_php-fpm
+    php:
+        container_name: ${CONTAINER_PREFIX}_php
         working_dir: /var/www/
         expose:
             - 8000
         build:
-            context: ./.docker/images/php-fpm
+            context: ./.docker/images/php
             args:
                 - TIMEZONE=${TIMEZONE}
                 - PHP_VERSION=${PHP_VERSION}

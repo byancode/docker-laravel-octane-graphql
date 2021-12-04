@@ -1,8 +1,6 @@
 Laradhoc
 ===
 
-![Laradhoc](media/images/laradhoc.png)
-
 ![GitHub stars](https://img.shields.io/github/stars/eleftrik/laradhoc?style=social)
 
 ![GitHub watchers](https://img.shields.io/github/watchers/eleftrik/laradhoc?style=social)
