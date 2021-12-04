@@ -1,4 +1,4 @@
 echo "#!/usr/bin/env bash" > ${LARADHOC_BASE_PATH}/bin/.env
 cat ${LARADHOC_BASE_PATH}/.laradhoc | grep -o -E "\w+=" | grep -o -E "\w+" | sort -u | while read -r line; do
-    echo "$line=${!line@Q}" >> ${LARADHOC_BASE_PATH}/bin/.env
+    echo "$line=${!line@Q}" | awk '{gsub(/\\n/,"\\\n")}1' >> ${LARADHOC_BASE_PATH}/bin/.env
 done
