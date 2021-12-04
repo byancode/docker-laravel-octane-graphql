@@ -1,7 +1,3 @@
-SCRIPT=`realpath $0`
-SCRIPT_PATH=`dirname $SCRIPT`
-export LARADHOC_BASE_PATH=`dirname $SCRIPT_PATH`
-
 echo "#!/usr/bin/env bash" > ${LARADHOC_BASE_PATH}/bin/.env
 cat ${LARADHOC_BASE_PATH}/.laradhoc | grep -o -E "^\w+=" | grep -o -E "^\w+" | while read -r line; do
     echo "$line=${!line}" >> ${LARADHOC_BASE_PATH}/bin/.env

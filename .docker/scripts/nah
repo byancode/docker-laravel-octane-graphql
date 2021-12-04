@@ -16,7 +16,7 @@ fi
 
 source ${LARADHOC_BASE_PATH}/.laradhoc
 
-${LARADHOC_BASE_PATH}/bin/environment
+source ${LARADHOC_BASE_PATH}/bin/environment
 
 echo "Stopping all containers and removing volumes..."
 docker-compose --env-file ${LARADHOC_BASE_PATH}/bin/.env --project-directory ${LARADHOC_BASE_PATH} down -v

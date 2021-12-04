@@ -22,7 +22,7 @@ fi
 
 source ${LARADHOC_BASE_PATH}/.laradhoc
 
-${LARADHOC_BASE_PATH}/bin/environment
+source ${LARADHOC_BASE_PATH}/bin/environment
 
 KEY_PATH="${LARADHOC_BASE_PATH}/.docker/images/nginx/ssl"
 
