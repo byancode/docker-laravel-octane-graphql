@@ -21,7 +21,7 @@ services:
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
             MYSQL_INITDB_SKIP_TZINFO: 1
         expose:
-            - "3306"
+            - 3306
         ports:
             - ${MYSQL_PORT:-3306}:3306
         volumes:
@@ -53,6 +53,7 @@ services:
         build:
             context: ./.docker/images/mongodb
             args:
+                - MONGODB_VERSION=${MONGODB_VERSION}
                 - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ROOT_USER}
                 - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ROOT_PASSWORD}
                 - MONGODB_DATABASE=${MONGODB_DATABASE}
@@ -76,6 +77,7 @@ services:
         build:
             context: ./.docker/images/nginx
             args:
+                - NGINX_VERSION=${NGINX_VERSION}
                 - APP_HOST=${APP_HOST}
                 - NGINX_ENABLE_HTTPS=${NGINX_ENABLE_HTTPS}
         volumes:
@@ -85,7 +87,11 @@ services:
         ports:
             - ${NGINX_PORT_80:-80}:80
             - ${NGINX_PORT_443:-443}:443
+            - ${MAILHOG_PORT:-8025}:8025
+            - ${ECHO_PORT:-6001}:6001
         depends_on:
+            - echo-server
+            - mailhog
             - php
 
     php:
@@ -99,22 +105,27 @@ services:
             args:
                 - TIMEZONE=${TIMEZONE}
                 - PHP_VERSION=${PHP_VERSION}
-                - OCTANE_HTTPS=${OCTANE_HTTPS}
                 - OCTANE_SERVER=${OCTANE_SERVER}
-                - ENABLE_XDEBUG=${ENABLE_XDEBUG}
-                - ENABLE_OPCACHE=${ENABLE_OPCACHE}
+                - ENABLE_XDEBUG=${PHP_ENABLE_XDEBUG}
+                - ENABLE_OPCACHE=${PHP_ENABLE_OPCACHE}
+                - ROADRUNNER_VERSION=${ROADRUNNER_VERSION}
+                - OCTANE_ENABLE_HTTPS=${OCTANE_ENABLE_HTTPS}
                 - PHP_MAX_EXECUTION_TIME=${PHP_MAX_EXECUTION_TIME}
                 - PHP_UPLOAD_MAX_FILESIZE=${PHP_UPLOAD_MAX_FILESIZE}
                 - PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT}
                 - PHP_POST_MAX_SIZE=${PHP_POST_MAX_SIZE}
         volumes:
             - ${APP_SRC}:/var/www/:cached
+        links:
+            - mailhog
 
     redis:
         restart: unless-stopped
         container_name: ${CONTAINER_PREFIX}_redis
         build:
             context: ./.docker/images/redis
+            args:
+                - REDIS_VERSION=${REDIS_VERSION}
         expose:
             - 6379
         ports:
@@ -125,17 +136,36 @@ services:
         container_name: ${CONTAINER_PREFIX}_mailhog
         build:
             context: ./.docker/images/mailhog
+            args:
+                - MAILHOG_VERSION=${MAILHOG_VERSION}
         expose:
-            - "1025"
-        ports:
-            - ${MAILHOG_PORT:-8025}:8025
+            - 1025
+            - 8025
 
     echo-server:
         restart: unless-stopped
         container_name: ${CONTAINER_PREFIX}_echo-server
         build:
             context: ./.docker/images/echo-server
-        ports:
+            args:
+                - ECHO_PORT=${ECHO_PORT}
+        environment:
+            - ECHO_DATABASE=${ECHO_DATABASE}
+            - ECHO_NODE_VERSION=${ECHO_NODE_VERSION}
+            - ECHO_SERVER_AUTH_HOST=${ECHO_SERVER_AUTH_HOST}
+            - ECHO_REDIS_PORT=${ECHO_REDIS_PORT}
+            - ECHO_REDIS_HOSTNAME=${ECHO_REDIS_HOSTNAME}
+            - ECHO_DEVMODE=${ECHO_DEVMODE}
+            - ECHO_PROTOCOL=${ECHO_PROTOCOL}
+            - ECHO_SSL_KEY_PATH=${ECHO_SSL_KEY_PATH}
+            - ECHO_SSL_CERT_PATH=${ECHO_SSL_CERT_PATH}
+            - ECHO_SSL_CHAIN_PATH=${ECHO_SSL_CHAIN_PATH}
+            - ECHO_SSL_PASSPHRASE=${ECHO_SSL_PASSPHRASE}
+            - ECHO_ALLOW_CORS=${ECHO_ALLOW_CORS}
+            - ECHO_ALLOW_ORIGIN=${ECHO_ALLOW_ORIGIN}
+            - ECHO_ALLOW_METHODS=${ECHO_ALLOW_METHODS}
+            - ECHO_ALLOW_HEADERS=${ECHO_ALLOW_HEADERS}
+        expose:
             - 6001
         depends_on:
             - redis
@@ -145,6 +175,8 @@ services:
         container_name: ${CONTAINER_PREFIX}_node
         build:
             context: ./.docker/images/node
+            args:
+                - NODE_VERSION=${NODE_VERSION}
         volumes:
             - ${APP_SRC:-.}:/var/www:cached
 

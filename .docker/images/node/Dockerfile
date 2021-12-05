@@ -1,1 +1,2 @@
-FROM node:13.8.0-alpine
+ARG NODE_VERSION=latest
+FROM node:$NODE_VERSION

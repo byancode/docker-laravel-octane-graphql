@@ -1,1 +1,2 @@
-FROM mailhog/mailhog:latest
+ARG MAILHOG_VERSION=latest
+FROM mailhog/mailhog:$MAILHOG_VERSION

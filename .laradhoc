@@ -1,21 +1,44 @@
 # The app name
 APP_NAME="Laradhoc"
 # The app hostname
-APP_HOST=laradhoc.test
+APP_HOST="laradhoc.test"
 # Path of your codebase (without trailing slash)
 APP_SRC=.
+# App in production mode
+if [ $PRODUCTION ] ; then
+    APP_NAME="laradhoc"
+    APP_HOST="laradhoc.com"
+fi
+
+
+
 
 TIMEZONE=UTC
+
+
+
 
 # Prefix for all container names. Don't use spaces.
 CONTAINER_PREFIX=laradhoc
 
+
+
+
+# Nginx
+# Please see https://hub.docker.com/_/nginx
+NGINX_VERSION=latest
 # Set to 1 to enable HTTPS, 0 to run only over HTTP
 NGINX_ENABLE_HTTPS=0
 # Port on which Nginx is listening
 NGINX_PORT_80=80
 # Port on which Nginx is listening (HTTPS)
 NGINX_PORT_443=443
+# Nginx in production mode
+if [ $PRODUCTION ] ; then
+    NGINX_ENABLE_HTTPS=1
+fi
+
+
 
 
 # Specify which PHP version to use
@@ -30,17 +53,31 @@ PHP_MAX_EXECUTION_TIME=300
 PHP_UPLOAD_MAX_FILESIZE=200M
 PHP_MEMORY_LIMIT=512M
 PHP_POST_MAX_SIZE=200M
+# Set to 1 to enable XDebug
+PHP_ENABLE_XDEBUG=1
+# Set to 1 to enable OPCACHE
+PHP_ENABLE_OPCACHE=0
+# PHP in production mode
+if [ $PRODUCTION ] ; then
+    PHP_ENABLE_XDEBUG=0
+    PHP_ENABLE_OPCACHE=1
+fi
 
-DATABASE_HOST="mysql"
-DATABASE_DATABASE="laradhoc"
+
+
+
 DATABASE_USERNAME="user"
 DATABASE_PASSWORD="password"
+DATABASE_DATABASE="laradhoc"
 DATABASE_ROOT_USERNAME="root"
 DATABASE_ROOT_PASSWORD="password"
-
+# Database in production mode
 if [ $PRODUCTION ] ; then
     DATABASE_USERNAME="laradhoc"
 fi
+
+
+
 
 # MySQL / MariaDB PORT
 MYSQL_PORT=3306
@@ -52,11 +89,13 @@ MYSQL_PORT=3306
 #   mysql:latest
 #   mariadb:10.3
 #
-MYSQL_IMAGE=mysql:latest
-MYSQL_DATABASE="${DATABASE_DATABASE}"
+MYSQL_IMAGE=mysql:8
 MYSQL_USER="${DATABASE_USERNAME}"
 MYSQL_PASSWORD="${DATABASE_PASSWORD}"
+MYSQL_DATABASE="${DATABASE_DATABASE}"
 MYSQL_ROOT_PASSWORD="${DATABASE_ROOT_PASSWORD}"
+
+
 
 
 # Port on which phpMyAdmin is listening
@@ -64,28 +103,69 @@ PHPMYADMIN_VERSION=5.1.0
 PHPMYADMIN_PORT=8082
 
 
+
+
 # MongoDB
+# Please see https://hub.docker.com/_/mongo
+MONGODB_VERSION=latest
 MONGODB_PORT=27017
-MONGODB_ROOT_USER="${DATABASE_ROOT_USERNAME}"
-MONGODB_ROOT_PASSWORD="${DATABASE_ROOT_PASSWORD}"
-MONGODB_DATABASE="${DATABASE_DATABASE}"
 MONGODB_USER="${DATABASE_USERNAME}"
 MONGODB_PASSWORD="${DATABASE_PASSWORD}"
+MONGODB_DATABASE="${DATABASE_DATABASE}"
+MONGODB_ROOT_USER="${DATABASE_ROOT_USERNAME}"
+MONGODB_ROOT_PASSWORD="${DATABASE_ROOT_PASSWORD}"
 
 
-# Set to 1 to enable XDebug
-ENABLE_XDEBUG=1
 
+
+# Please see https://hub.docker.com/_/redis
+REDIS_VERSION=latest
 REDIS_PORT=6379
 
+
+
+
+# Please see https://hub.docker.com/_/node
+NODE_VERSION=latest
+
+
+
+
+# Please see https://hub.docker.com/r/spiralscout/roadrunner
+ROADRUNNER_VERSION=latest
+
+
+
+
 # Port on which MailHog replies (SMTP server for development purpose: https://github.com/mailhog/MailHog)
+# Please see https://hub.docker.com/r/mailhog/mailhog
+MAILHOG_VERSION=latest
 MAILHOG_PORT=8081
 
 
-# Set to 1 to enable OPCACHE
-ENABLE_OPCACHE=1
+
 
 # Laravel Octane
-OCTANE_SERVER="swoole"
+OCTANE_SERVER=swoole
 # Set to 1 to enable HTTPS on Octane
-OCTANE_HTTPS=1
+OCTANE_ENABLE_HTTPS=1
+
+
+
+
+ECHO_PORT=6001
+ECHO_NODE_VERSION=latest
+ECHO_SERVER_AUTH_HOST=http://${APP_HOST}
+ECHO_DATABASE=redis
+ECHO_REDIS_PORT=6379
+ECHO_REDIS_HOSTNAME=redis
+ECHO_DEVMODE=false
+ECHO_PROTOCOL=http
+ECHO_SSL_KEY_PATH=
+ECHO_SSL_CERT_PATH=
+ECHO_SSL_CHAIN_PATH=
+ECHO_SSL_PASSPHRASE=
+ECHO_ALLOW_CORS=true
+ECHO_ALLOW_ORIGIN="*"
+ECHO_ALLOW_METHODS="GET,POST,PUT,DELETE,OPTIONS"
+ECHO_ALLOW_HEADERS="Origin, Content-Type, X-Auth-Token, X-Requested-With, Accept, Authorization, X-CSRF-TOKEN, X-Socket-Id"
