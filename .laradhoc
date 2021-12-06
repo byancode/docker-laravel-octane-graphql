@@ -163,6 +163,14 @@ MEILISEARCH_ENABLE=true
 
 
 
+# Please see https://hub.docker.com/r/shokme/meilisearch-dashboard
+MEILISEARCH_DASHBOARD_VERSION=latest
+MEILISEARCH_DASHBOARD_ENABLE=${MEILISEARCH_ENABLE:-true}
+MEILISEARCH_DASHBOARD_PORT=8089
+
+
+
+
 # Please see https://hub.docker.com/_/minio
 MINIO_VERSION=latest
 MINIO_ENABLE=true
@@ -171,14 +179,6 @@ MINIO_CONSOLE_PORT=8900
 MINIO_ROOT_USER="${DATABASE_ROOT_USERNAME}"
 MINIO_ROOT_PASSWORD="${DATABASE_ROOT_PASSWORD}"
 
-
-
-
-
-# Please see https://hub.docker.com/r/shokme/meilisearch-dashboard
-MEILISEARCH_DASHBOARD_VERSION=latest
-MEILISEARCH_DASHBOARD_ENABLE=${MEILISEARCH_ENABLE:-true}
-MEILISEARCH_DASHBOARD_PORT=8089
 
 
 

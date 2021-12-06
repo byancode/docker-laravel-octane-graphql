@@ -1,0 +1,8 @@
+version: '3.2'
+services:
+    installer:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                - OCTANE_SERVER=${OCTANE_SERVER:-swoole}

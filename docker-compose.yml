@@ -261,13 +261,6 @@ services:
             - 11211
         networks:
             - laradhoc
-
-    selenium:
-        image: selenium/standalone-chrome
-        volumes:
-            - /dev/shm:/dev/shm
-        networks:
-            - laradhoc
 volumes:
     sql-data: null
     minio-data: null
