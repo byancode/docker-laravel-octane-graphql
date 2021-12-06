@@ -1,5 +1,36 @@
 version: '3.2'
 services:
+    laravel:
+        restart: unless-stopped
+        container_name: ${CONTAINER_PREFIX}_laravel
+        working_dir: /var/www/
+        expose:
+            - 8000
+        build:
+            context: ./.docker/images/laravel
+            args:
+                - TIMEZONE=${TIMEZONE}
+                - PHP_VERSION=${PHP_VERSION}
+                - OCTANE_SERVER=${OCTANE_SERVER}
+                - ENABLE_XDEBUG=${PHP_ENABLE_XDEBUG}
+                - PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT}
+                - ENABLE_OPCACHE=${PHP_ENABLE_OPCACHE}
+                - PHP_POST_MAX_SIZE=${PHP_POST_MAX_SIZE}
+                - ROADRUNNER_VERSION=${ROADRUNNER_VERSION}
+                - OCTANE_ENABLE_HTTPS=${OCTANE_ENABLE_HTTPS}
+                - PHP_MAX_EXECUTION_TIME=${PHP_MAX_EXECUTION_TIME}
+                - PHP_UPLOAD_MAX_FILESIZE=${PHP_UPLOAD_MAX_FILESIZE}
+        volumes:
+            - ${APP_SRC:-.}:/var/www/:cached
+        networks:
+            - laradhoc
+        depends_on:
+            - memcached
+            - mongodb
+            - mailhog
+            - mysql
+            - redis
+
     mysql:
         restart: unless-stopped
         container_name: ${CONTAINER_PREFIX}_mysql
@@ -26,8 +57,8 @@ services:
             - ${MYSQL_PORT:-3306}:3306
         volumes:
             - sql-data:/var/lib/mysql
-        depends_on:
-            - nginx
+        networks:
+            - laradhoc
 
     phpmyadmin:
         restart: unless-stopped
@@ -44,6 +75,8 @@ services:
             - PMA_PASSWORD=${MYSQL_PASSWORD}
         ports:
             - ${PHPMYADMIN_PORT:-8080}:80
+        networks:
+            - laradhoc
         depends_on:
             - mysql
 
@@ -69,6 +102,8 @@ services:
             - ${MONGODB_PORT:-27017}:27017
         volumes:
             - mongodb-data:/data/db
+        networks:
+            - laradhoc
 
     nginx:
         restart: unless-stopped
@@ -77,11 +112,11 @@ services:
         build:
             context: ./.docker/images/nginx
             args:
-                - NGINX_VERSION=${NGINX_VERSION}
                 - APP_HOST=${APP_HOST}
+                - NGINX_VERSION=${NGINX_VERSION}
                 - NGINX_ENABLE_HTTPS=${NGINX_ENABLE_HTTPS}
         volumes:
-            - ${APP_SRC}:/var/www/:cached
+            - ${APP_SRC:-.}:/var/www/:cached
             - ./.docker/images/nginx/nginx.conf:/etc/nginx/nginx.conf
             - ./.docker/images/nginx/conf.d/:/etc/nginx/conf.d
         ports:
@@ -89,35 +124,12 @@ services:
             - ${NGINX_PORT_443:-443}:443
             - ${MAILHOG_PORT:-8025}:8025
             - ${ECHO_PORT:-6001}:6001
+        networks:
+            - laradhoc
         depends_on:
             - echo-server
             - mailhog
-            - php
-
-    php:
-        restart: unless-stopped
-        container_name: ${CONTAINER_PREFIX}_php
-        working_dir: /var/www/
-        expose:
-            - 8000
-        build:
-            context: ./.docker/images/php
-            args:
-                - TIMEZONE=${TIMEZONE}
-                - PHP_VERSION=${PHP_VERSION}
-                - OCTANE_SERVER=${OCTANE_SERVER}
-                - ENABLE_XDEBUG=${PHP_ENABLE_XDEBUG}
-                - ENABLE_OPCACHE=${PHP_ENABLE_OPCACHE}
-                - ROADRUNNER_VERSION=${ROADRUNNER_VERSION}
-                - OCTANE_ENABLE_HTTPS=${OCTANE_ENABLE_HTTPS}
-                - PHP_MAX_EXECUTION_TIME=${PHP_MAX_EXECUTION_TIME}
-                - PHP_UPLOAD_MAX_FILESIZE=${PHP_UPLOAD_MAX_FILESIZE}
-                - PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT}
-                - PHP_POST_MAX_SIZE=${PHP_POST_MAX_SIZE}
-        volumes:
-            - ${APP_SRC}:/var/www/:cached
-        links:
-            - mailhog
+            - laravel
 
     redis:
         restart: unless-stopped
@@ -130,6 +142,8 @@ services:
             - 6379
         ports:
             - ${REDIS_PORT:-6379}:6379
+        networks:
+            - laradhoc
 
     mailhog:
         restart: unless-stopped
@@ -138,6 +152,8 @@ services:
             context: ./.docker/images/mailhog
             args:
                 - MAILHOG_VERSION=${MAILHOG_VERSION}
+        networks:
+            - laradhoc
         expose:
             - 1025
             - 8025
@@ -145,28 +161,29 @@ services:
     echo-server:
         restart: unless-stopped
         container_name: ${CONTAINER_PREFIX}_echo-server
+        working_dir: /opt/laravel-echo-server
         build:
             context: ./.docker/images/echo-server
             args:
-                - ECHO_PORT=${ECHO_PORT}
+                - NODE_VERSION=${ECHO_NODE_VERSION}
         environment:
+            - ECHO_PORT=${ECHO_PORT}
+            - ECHO_DEVMODE=${ECHO_DEVMODE}
             - ECHO_DATABASE=${ECHO_DATABASE}
-            - ECHO_NODE_VERSION=${ECHO_NODE_VERSION}
-            - ECHO_SERVER_AUTH_HOST=${ECHO_SERVER_AUTH_HOST}
+            - ECHO_PROTOCOL=${ECHO_PROTOCOL}
+            - ECHO_AUTH_HOST=${ECHO_AUTH_HOST}
             - ECHO_REDIS_PORT=${ECHO_REDIS_PORT}
             - ECHO_REDIS_HOSTNAME=${ECHO_REDIS_HOSTNAME}
-            - ECHO_DEVMODE=${ECHO_DEVMODE}
-            - ECHO_PROTOCOL=${ECHO_PROTOCOL}
-            - ECHO_SSL_KEY_PATH=${ECHO_SSL_KEY_PATH}
-            - ECHO_SSL_CERT_PATH=${ECHO_SSL_CERT_PATH}
-            - ECHO_SSL_CHAIN_PATH=${ECHO_SSL_CHAIN_PATH}
-            - ECHO_SSL_PASSPHRASE=${ECHO_SSL_PASSPHRASE}
             - ECHO_ALLOW_CORS=${ECHO_ALLOW_CORS}
             - ECHO_ALLOW_ORIGIN=${ECHO_ALLOW_ORIGIN}
             - ECHO_ALLOW_METHODS=${ECHO_ALLOW_METHODS}
             - ECHO_ALLOW_HEADERS=${ECHO_ALLOW_HEADERS}
         expose:
             - 6001
+        volumes:
+            - .docker/images/nginx/ssl:./ssl
+        networks:
+            - laradhoc
         depends_on:
             - redis
 
@@ -179,7 +196,83 @@ services:
                 - NODE_VERSION=${NODE_VERSION}
         volumes:
             - ${APP_SRC:-.}:/var/www:cached
+        networks:
+            - laradhoc
+        depends_on:
+            - mongodb
+            - mysql
+            - redis
 
+    minio:
+        image: minio/minio:${MINIO_VERSION:-latest}
+        ports:
+            - '${MINIO_PORT:-9000}:9000'
+            - '${MINIO_CONSOLE_PORT:-8900}:8900'
+        environment:
+            - MINIO_ROOT_USER=${MINIO_ROOT_USER:-root}
+            - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-password}
+        volumes:
+            - minio-data:/data/minio
+        networks:
+            - laradhoc
+        command: minio server /data/minio --console-address ":8900"
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "curl",
+                    "-f",
+                    "http://localhost:9000/minio/health/live"
+                ]
+            retries: 3
+            timeout: 5s
+
+    meilisearch-dashboard:
+        image: shokme/meilisearch-dashboard:${MEILISEARCH_DASHBOARD_VERSION:-latest}
+        ports:
+            - ${MEILISEARCH_DASHBOARD_PORT:-8089}:80
+        networks:
+            - laradhoc
+
+    meilisearch:
+        image: getmeili/meilisearch:${MEILISEARCH_VERSION:-latest}
+        platform: linux/x86_64
+        expose:
+            - 7700
+        volumes:
+            - meilisearch-data:/data.ms
+        networks:
+            - laradhoc
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "wget",
+                    "--no-verbose",
+                    "--spider",
+                    "http://localhost:7700/health"
+                ]
+            retries: 3
+            timeout: 5s
+
+    memcached:
+        image: memcached:${MEMCACHED_VERSION:-alpine}
+        expose:
+            - 11211
+        networks:
+            - laradhoc
+
+    selenium:
+        image: selenium/standalone-chrome
+        volumes:
+            - /dev/shm:/dev/shm
+        networks:
+            - laradhoc
 volumes:
     sql-data: null
+    minio-data: null
     mongodb-data: null
+    meilisearch-data: null
+networks:
+    laradhoc:
+        driver: bridge

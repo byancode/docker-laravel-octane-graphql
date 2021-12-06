@@ -3,12 +3,12 @@
 set -e
 
 if ! [ -e laravel-echo-server.json ]; then
-  cp laravel-echo-server.example.json laravel-echo-server.json
+    cp laravel-echo-server.example.json laravel-echo-server.json
 fi
 
 sed -i -e "s%\"ECHO_PORT\"%$ECHO_PORT%g" laravel-echo-server.json
 sed -i -e "s%ECHO_DATABASE%$ECHO_DATABASE%g" laravel-echo-server.json
-sed -i -e "s%ECHO_SERVER_AUTH_HOST%$ECHO_SERVER_AUTH_HOST%g" laravel-echo-server.json
+sed -i -e "s%ECHO_AUTH_HOST%$ECHO_AUTH_HOST%g" laravel-echo-server.json
 sed -i -e "s%ECHO_PROTOCOL%$ECHO_PROTOCOL%g" laravel-echo-server.json
 sed -i -e "s%\"ECHO_DEVMODE\"%$ECHO_DEVMODE%g" laravel-echo-server.json
 sed -i -e "s%\"ECHO_REDIS_PORT\"%$ECHO_REDIS_PORT%g" laravel-echo-server.json

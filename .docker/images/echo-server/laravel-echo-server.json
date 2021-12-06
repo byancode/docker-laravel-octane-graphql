@@ -1,12 +1,16 @@
 {
-    "authHost": "ECHO_SERVER_AUTH_HOST",
     "authEndpoint": "/broadcasting/auth",
+    "authHost": "ECHO_SERVER_AUTH_HOST",
     "database": "ECHO_DATABASE",
     "databaseConfig": {
         "redis": {
             "port": "ECHO_REDIS_PORT",
             "host": "ECHO_REDIS_HOSTNAME"
-        }
+        },
+        "sqlite": {
+            "databasePath": "/opt/laravel-echo-server/database.sqlite"
+        },
+        "publishPresence": true
     },
     "socketio": {},
     "clients": [],
@@ -16,8 +20,8 @@
     "protocol": "ECHO_PROTOCOL",
     "sslKeyPath": "ECHO_SSL_KEY_PATH",
     "sslCertPath": "ECHO_SSL_CERT_PATH",
-    "sslCertChainPath": "ECHO_SSL_CHAIN_PATH",
     "sslPassphrase": "ECHO_SSL_PASSPHRASE",
+    "sslCertChainPath": "ECHO_SSL_CHAIN_PATH",
     "apiOriginAllow": {
         "allowCors": "ECHO_ALLOW_CORS",
         "allowOrigin": "ECHO_ALLOW_ORIGIN",
