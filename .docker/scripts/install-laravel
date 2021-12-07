@@ -22,5 +22,7 @@ php artisan vendor:publish --provider="Rebing\GraphQL\GraphQLServiceProvider"
 
 cp -Ra ${PATH_TMP}/. ${PATH_SRC}
 rm -rf ${PATH_TMP}
+
 ${LARADHOC_BASE_PATH}/.docker/scripts/init-laravel --new
+
 rm -rf .git
