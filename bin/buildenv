@@ -29,6 +29,9 @@ fi
 if [ true == $MINIO_ENABLE ]; then
     ENABLES+=("minio")
 fi
+if [ true == $MONGOKU_ENABLE ]; then
+    ENABLES+=("mongoku")
+fi
 if [ true == $MAILHOG_ENABLE ]; then
     ENABLES+=("mailhog")
 fi
