@@ -46,4 +46,4 @@ if [ ${MEILISEARCH_DASHBOARD_ENABLE:-false} ]; then
 fi
 
 
-SERVICES_ENABLE=$(IFS= ; echo "${ENABLES[*]}")
+SERVICES_ENABLE=$(IFS=" "; echo "${ENABLES[*]}")
