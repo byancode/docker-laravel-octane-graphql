@@ -50,6 +50,7 @@ services:
             - ${NGINX_PORT_443:-443}:443
             - ${MAILHOG_PORT:-8025}:8025
             - ${ECHO_PORT:-6001}:6001
+            - ${MONGOKU_PORT:-3100}:3100
         depends_on:
             - echo-server
             - phpmyadmin
@@ -95,8 +96,8 @@ services:
             - PMA_PORT=${MYSQL_PORT:-3306}
             - PMA_USER=${MYSQL_USER}
             - PMA_PASSWORD=${MYSQL_PASSWORD}
-        expose:
-            - 80
+        ports:
+            - ${PHPMYADMIN_PORT:-8080}:80
         depends_on:
             - mysql
 
@@ -130,6 +131,8 @@ services:
         environment:
             - MONGOKU_COUNT_TIMEOUT=${MONGOKU_COUNT_TIMEOUT}
             - MONGOKU_DEFAULT_HOST=${MONGOKU_DEFAULT_HOST}
+        ports:
+            - ${MONGOKU_PORT:-3100}:3100
         depends_on:
             - mongodb
 
@@ -150,6 +153,8 @@ services:
             context: ./.docker/images/mailhog
             args:
                 - MAILHOG_VERSION=${MAILHOG_VERSION}
+        ports:
+            - ${MAILHOG_PORT:-8025}:8025
         expose:
             - 1025
             - 8025

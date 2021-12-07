@@ -137,10 +137,9 @@ MONGODB_ROOT_PASSWORD="${DATABASE_ROOT_PASSWORD}"
 # Please see https://hub.docker.com/r/huggingface/mongoku
 MONGOKU_VERSION=latest
 MONGOKU_ENABLE=true
+MONGOKU_PORT=3100
 # Use some customized default hosts (Default = localhost:27017)
 MONGOKU_DEFAULT_HOST="mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@mongodb:27017/?authMechanism=SCRAM-SHA-1"
-# Use another port. (Default = 3100)
-MONGOKU_SERVER_PORT=3100
 MONGOKU_COUNT_TIMEOUT=5000
 
 

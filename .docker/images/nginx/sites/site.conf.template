@@ -9,15 +9,6 @@ upstream host1 {
 upstream host2 {
     server echo-server:6001;
 }
-upstream host3 {
-    server mailhog:8025;
-}
-upstream host4 {
-    server mongoku:3100;
-}
-upstream host5 {
-    server phpmyadmin:80;
-}
 
 server {
     listen 80;
@@ -72,27 +63,6 @@ server {
 
     location /socket.io {
         proxy_pass http://host2;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "Upgrade";
-    }
-
-    location /mailhog {
-        proxy_pass http://host3;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "Upgrade";
-    }
-
-    location /mongoku {
-        proxy_pass http://host4;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "Upgrade";
-    }
-
-    location /phpmyadmin {
-        proxy_pass http://host5;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "Upgrade";
