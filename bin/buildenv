@@ -38,6 +38,9 @@ fi
 if [ true == $MAILHOG_ENABLE ]; then
     ENABLES+=("mailhog")
 fi
+if [ true == $POSTGRES_ENABLE ]; then
+    ENABLES+=("postgres")
+fi
 if [ true == $MEMCACHED_ENABLE ]; then
     ENABLES+=("memcached")
 fi

@@ -78,7 +78,7 @@ services:
         expose:
             - 3306
         volumes:
-            - sql-data:/var/lib/mysql
+            - mysql-data:/var/lib/mysql
 
     phpmyadmin:
         restart: unless-stopped
@@ -120,8 +120,10 @@ services:
             - 27017
         volumes:
             - mongodb-data:/data/db
+
     mongoku:
         restart: unless-stopped
+        container_name: ${CONTAINER_PREFIX}_mongoku
         image: huggingface/mongoku:${MONGOKU_VERSION}
         expose:
             - 3100
@@ -163,23 +165,48 @@ services:
         build:
             context: ./.docker/images/echo-server
             args:
+                - ECHO_PORT=${ECHO_PORT}
                 - NODE_VERSION=${ECHO_NODE_VERSION}
-        environment:
-            - ECHO_PORT=${ECHO_PORT}
-            - ECHO_DEVMODE=${ECHO_DEVMODE}
-            - ECHO_DATABASE=${ECHO_DATABASE}
-            - ECHO_PROTOCOL=${ECHO_PROTOCOL}
-            - ECHO_AUTH_HOST=${ECHO_AUTH_HOST}
-            - ECHO_REDIS_PORT=${ECHO_REDIS_PORT}
-            - ECHO_REDIS_HOSTNAME=${ECHO_REDIS_HOSTNAME}
-            - ECHO_ALLOW_CORS=${ECHO_ALLOW_CORS}
-            - ECHO_ALLOW_ORIGIN=${ECHO_ALLOW_ORIGIN}
-            - ECHO_ALLOW_METHODS=${ECHO_ALLOW_METHODS}
-            - ECHO_ALLOW_HEADERS=${ECHO_ALLOW_HEADERS}
+                - ECHO_DEVMODE=${ECHO_DEVMODE}
+                - ECHO_DATABASE=${ECHO_DATABASE}
+                - ECHO_PROTOCOL=${ECHO_PROTOCOL}
+                - ECHO_AUTH_HOST=${ECHO_AUTH_HOST}
+                - ECHO_REDIS_PORT=${ECHO_REDIS_PORT}
+                - ECHO_REDIS_HOSTNAME=${ECHO_REDIS_HOSTNAME}
+                - ECHO_ALLOW_CORS=${ECHO_ALLOW_CORS}
+                - ECHO_ALLOW_ORIGIN=${ECHO_ALLOW_ORIGIN}
+                - ECHO_ALLOW_METHODS=${ECHO_ALLOW_METHODS}
+                - ECHO_ALLOW_HEADERS=${ECHO_ALLOW_HEADERS}
         expose:
             - 6001
         depends_on:
             - redis
+
+    postgres:
+        container_name: ${CONTAINER_PREFIX}_postgres
+        image: postgres:${POSTGRES_VERSION:-latest}
+        ports:
+            - ${POSTGRES_PORT:-5432}:5432
+        environment:
+            PGPASSWORD: ${POSTGRES_PASSWORD:-secret}
+            POSTGRES_DB: ${POSTGRES_DATABASE}
+            POSTGRES_USER: ${POSTGRES_USER:-root}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secret}
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "pg_isready",
+                    "-q",
+                    "-d",
+                    "${POSTGRES_DATABASE}",
+                    "-U",
+                    "${POSTGRES_USER}"
+                ]
+            retries: 3
+            timeout: 5s
 
     node:
         working_dir: /var/www/
@@ -197,6 +224,7 @@ services:
             - redis
 
     minio:
+        container_name: ${CONTAINER_PREFIX}_minio
         image: minio/minio:${MINIO_VERSION:-latest}
         ports:
             - '${MINIO_PORT:-9000}:9000'
@@ -219,6 +247,7 @@ services:
             timeout: 5s
 
     meilisearch-dashboard:
+        container_name: ${CONTAINER_PREFIX}_meilisearch-dashboard
         image: shokme/meilisearch-dashboard:${MEILISEARCH_DASHBOARD_VERSION:-latest}
         ports:
             - ${MEILISEARCH_DASHBOARD_PORT:-8089}:80
@@ -226,6 +255,7 @@ services:
             - laradhoc
 
     meilisearch:
+        container_name: ${CONTAINER_PREFIX}_meilisearch
         image: getmeili/meilisearch:${MEILISEARCH_VERSION:-latest}
         platform: linux/x86_64
         expose:
@@ -247,19 +277,22 @@ services:
             timeout: 5s
 
     memcached:
+        container_name: ${CONTAINER_PREFIX}_memcached
         image: memcached:${MEMCACHED_VERSION:-alpine}
         expose:
             - 11211
     rethinkdb:
+        container_name: ${CONTAINER_PREFIX}_rethinkdb
         image: rethinkdb:${RETHINKDB_VERSION:-latest}
         ports:
             - ${RETHINKDB_PORT:-8087}:8080
         volumes:
             - rethinkdb-data:/data
 volumes:
-    sql-data: null
+    mysql-data: null
     minio-data: null
     mongodb-data: null
+    postgres-data: null
     rethinkdb-data: null
     meilisearch-data: null
 
