@@ -32,9 +32,9 @@ fi
 if [ ${MAILHOG_ENABLE:-false} ]; then
     ENABLES+=("mailhog")
 fi
-if [ ${ROADRUNNER_ENABLE:-false} ]; then
-    ENABLES+=("roadrunner")
-fi
+# if [ ${ROADRUNNER_ENABLE:-false} ]; then
+#     ENABLES+=("roadrunner")
+# fi
 if [ ${MEMCACHED_ENABLE:-false} ]; then
     ENABLES+=("memcached")
 fi
