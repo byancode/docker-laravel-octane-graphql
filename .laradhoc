@@ -139,8 +139,16 @@ MONGOKU_VERSION=latest
 MONGOKU_ENABLE=true
 MONGOKU_PORT=3100
 # Use some customized default hosts (Default = localhost:27017)
-MONGOKU_DEFAULT_HOST="mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@mongodb:27017/?authMechanism=SCRAM-SHA-1"
+MONGOKU_DEFAULT_HOST="mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongodb:27017/?authMechanism=SCRAM-SHA-1"
 MONGOKU_COUNT_TIMEOUT=5000
+
+
+
+
+# Please see https://hub.docker.com/_/rethinkdb
+RETHINKDB_VERSION=latest
+RETHINKDB_ENABLE=true
+RETHINKDB_PORT=8087
 
 
 
@@ -204,7 +212,7 @@ MINIO_ROOT_PASSWORD="${DATABASE_ROOT_PASSWORD}"
 # Please see https://hub.docker.com/r/mailhog/mailhog
 MAILHOG_VERSION=latest
 MAILHOG_ENABLE=true
-MAILHOG_PORT=8081
+MAILHOG_PORT=8025
 
 
 

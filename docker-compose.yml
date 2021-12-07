@@ -48,9 +48,6 @@ services:
         ports:
             - ${NGINX_PORT_80:-80}:80
             - ${NGINX_PORT_443:-443}:443
-            - ${MAILHOG_PORT:-8025}:8025
-            - ${ECHO_PORT:-6001}:6001
-            - ${MONGOKU_PORT:-3100}:3100
         depends_on:
             - echo-server
             - phpmyadmin
@@ -194,6 +191,7 @@ services:
         volumes:
             - ${APP_SRC:-.}:/var/www:cached
         depends_on:
+            - rethinkdb
             - mongodb
             - mysql
             - redis
@@ -252,10 +250,17 @@ services:
         image: memcached:${MEMCACHED_VERSION:-alpine}
         expose:
             - 11211
+    rethinkdb:
+        image: rethinkdb:${RETHINKDB_VERSION:-latest}
+        ports:
+            - ${RETHINKDB_PORT:-8087}:8080
+        volumes:
+            - rethinkdb-data:/data
 volumes:
     sql-data: null
     minio-data: null
     mongodb-data: null
+    rethinkdb-data: null
     meilisearch-data: null
 
 networks:

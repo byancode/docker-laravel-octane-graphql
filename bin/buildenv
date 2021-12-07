@@ -8,6 +8,9 @@ ENABLES=()
 if [ true == $PHPMYADMIN_ENABLE ]; then
     ENABLES+=("phpmyadmin")
 fi
+if [ true == $RETHINKDB_ENABLE ]; then
+    ENABLES+=("rethinkdb")
+fi
 if [ true == $ECHO_ENABLE ]; then
     ENABLES+=("echo-server")
 fi
