@@ -1,6 +1,11 @@
 #!/bin/bash
 source ${LARADHOC_BASE_PATH}/.laradhoc
+source ${LARADHOC_BASE_PATH}/bin/buildenv
 
-source ${LARADHOC_BASE_PATH}/bin/environment
-
-docker-compose --env-file ${LARADHOC_BASE_PATH}/bin/.env --project-directory ${LARADHOC_BASE_PATH} --project-name "$CONTAINER_PREFIX" down
+docker-compose \
+--env-file ${LARADHOC_BASE_PATH}/bin/.env \
+--project-directory ${LARADHOC_BASE_PATH} \
+--project-name "$CONTAINER_PREFIX" \
+--file ${LARADHOC_BASE_PATH}/docker-compose.yml \
+--file ${LARADHOC_BASE_PATH}/docker-compose.override.yml \
+down

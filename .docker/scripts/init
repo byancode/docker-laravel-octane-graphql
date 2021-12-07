@@ -8,21 +8,20 @@ PRODUCTION=false
 DEVELOPMENT=false
 
 if [ "$1" == "--prod" ] || [ "$1" == "--production" ]; then
-    PROD=true
     PRODUCTION=true
+    PROD=$PRODUCTION
 fi
 if [ "$1" == "--dev" ] || [ "$1" == "--development" ]; then
-    DEV=true
     DEVELOPMENT=true
+    DEV=$DEVELOPMENT
 fi
 if [ "$1" == "--test" ] || [ "$1" == "--testing" ]; then
-    TEST=true
     TESTING=true
+    TEST=$TESTING
 fi
 
 source ${LARADHOC_BASE_PATH}/.laradhoc
-
-source ${LARADHOC_BASE_PATH}/bin/environment
+source ${LARADHOC_BASE_PATH}/bin/buildenv
 
 KEY_PATH="${LARADHOC_BASE_PATH}/.docker/images/nginx/ssl"
 ECHO_SSL_PATH="${LARADHOC_BASE_PATH}/.docker/images/echo-server/ssl"
@@ -43,4 +42,10 @@ if [ $NGINX_ENABLE_HTTPS == 1 ] ; then
     cp -f ${KEY_PATH}/${APP_HOST}.key ${ECHO_SSL_PATH}/server.key
 fi
 
-docker-compose --env-file ${LARADHOC_BASE_PATH}/bin/.env --project-directory ${LARADHOC_BASE_PATH} --project-name "$CONTAINER_PREFIX" up -d --build $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+docker-compose \
+--env-file ${LARADHOC_BASE_PATH}/bin/.env \
+--project-directory ${LARADHOC_BASE_PATH} \
+--project-name "${CONTAINER_PREFIX}" \
+--file ${LARADHOC_BASE_PATH}/docker-compose.yml \
+--file ${LARADHOC_BASE_PATH}/docker-compose.override.yml \
+up -d --build $@ -- $SERVICES_ENABLE

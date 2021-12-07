@@ -31,9 +31,10 @@ if [ ! -f ${LARADHOC_BASE_PATH}/.laradhoc ]; then
     exit 1
 fi
 
-source ${LARADHOC_BASE_PATH}/.laradhoc
+function join_by { local d=${1-} f=${2-}; if shift 2; then printf %s "$f" "${@/#/$d}"; fi; }
 
-${LARADHOC_BASE_PATH}/bin/environment
+source ${LARADHOC_BASE_PATH}/.laradhoc
+source ${LARADHOC_BASE_PATH}/bin/buildenv
 
 # Ensure containers are running
 PSRESULT="$(docker-compose --env-file ${LARADHOC_BASE_PATH}/bin/.env --project-directory ${LARADHOC_BASE_PATH} -p $CONTAINER_PREFIX ps -q)"
@@ -73,34 +74,38 @@ if [ "$COMMAND" == "init" ]; then
     ${SCRIPTS_DIR}stop
     elif [ "$COMMAND" == "artisan" ] || [ "$COMMAND" == "art" ]; then
     check_if_is_running
-    ${SCRIPTS_DIR}artisan $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+    ${SCRIPTS_DIR}artisan $@
     elif [ "$COMMAND" == "tinker" ]; then
     check_if_is_running
     ${SCRIPTS_DIR}artisan tinker
     elif [ "$COMMAND" == "composer" ]; then
     check_if_is_running
-    ${SCRIPTS_DIR}composer $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+    ${SCRIPTS_DIR}composer $@
     elif [ "$COMMAND" == "test" ]; then
     check_if_is_running
-    ${SCRIPTS_DIR}artisan test $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+    ${SCRIPTS_DIR}artisan test $@
     elif [ "$COMMAND" == "phpunit" ]; then
     check_if_is_running
-    ${SCRIPTS_DIR}phpunit $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+    ${SCRIPTS_DIR}phpunit $@
     elif [ "$COMMAND" == "ps" ]; then
     check_if_is_running
-    docker-compose --env-file ${LARADHOC_BASE_PATH}/bin/.env --project-directory ${LARADHOC_BASE_PATH} -p $CONTAINER_PREFIX ps
+    docker-compose \
+    --env-file ${LARADHOC_BASE_PATH}/bin/.env \
+    --project-directory ${LARADHOC_BASE_PATH} \
+    --project-name "${CONTAINER_PREFIX}" \
+    ps
     elif [ "$COMMAND" == "nah" ]; then
     check_if_is_running
     ${SCRIPTS_DIR}nah
     elif [ "$COMMAND" == "node" ]; then
     check_if_is_running
-    ${SCRIPTS_DIR}node $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+    ${SCRIPTS_DIR}node $@
     elif [ "$COMMAND" == "gulp" ]; then
     check_if_is_running
-    ${SCRIPTS_DIR}gulp $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
-    elif [ "$COMMAND" == "php" ]; then
+    ${SCRIPTS_DIR}gulp $@
+    elif [ "$COMMAND" == "laravel" ]; then
     check_if_is_running
-    docker exec -u 0 -it ${CONTAINER_PREFIX}_php-fpm $@
+    docker exec -u 0 -it ${CONTAINER_PREFIX}_laravel $@
 else
     echo -e "\n${ERROR}Command '$COMMAND' not defined.${NC}\n"
 fi

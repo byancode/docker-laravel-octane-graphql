@@ -25,11 +25,13 @@ services:
         networks:
             - laradhoc
         depends_on:
+            - meilisearch
             - memcached
             - mongodb
             - mailhog
             - mysql
             - redis
+            - minio
 
     mysql:
         restart: unless-stopped
@@ -69,8 +71,8 @@ services:
                 - PHPMYADMIN_VERSION=${PHPMYADMIN_VERSION}
         environment:
             - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-            - PMA_HOST=database
-            - PMA_PORT=3306
+            - PMA_HOST=mysql
+            - PMA_PORT=${MYSQL_PORT:-3306}
             - PMA_USER=${MYSQL_USER}
             - PMA_PASSWORD=${MYSQL_PASSWORD}
         ports:

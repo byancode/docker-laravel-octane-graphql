@@ -1,0 +1,49 @@
+echo "#!/usr/bin/env bash" > ${LARADHOC_BASE_PATH}/bin/.env
+cat ${LARADHOC_BASE_PATH}/.laradhoc | grep -o -E "\w+=" | grep -o -E "\w+" | sort -u | while read -r line; do
+    echo "$line=${!line@Q}" | awk '{gsub(/\\n/,"\\\n")}1' >> ${LARADHOC_BASE_PATH}/bin/.env
+done
+
+ENABLES=()
+
+if [ ${PHPMYADMIN_ENABLE:-false} ]; then
+    ENABLES+=("phpmyadmin")
+fi
+if [ ${ECHO_ENABLE:-false} ]; then
+    ENABLES+=("echo-server")
+fi
+if [ ${MONGODB_ENABLE:-false} ]; then
+    ENABLES+=("mongodb")
+fi
+if [ ${NGINX_ENABLE:-false} ]; then
+    ENABLES+=("nginx")
+fi
+if [ ${MYSQL_ENABLE:-false} ]; then
+    ENABLES+=("mysql")
+fi
+if [ ${REDIS_ENABLE:-false} ]; then
+    ENABLES+=("redis")
+fi
+if [ ${NODE_ENABLE:-false} ]; then
+    ENABLES+=("node")
+fi
+if [ ${MINIO_ENABLE:-false} ]; then
+    ENABLES+=("minio")
+fi
+if [ ${MAILHOG_ENABLE:-false} ]; then
+    ENABLES+=("mailhog")
+fi
+if [ ${ROADRUNNER_ENABLE:-false} ]; then
+    ENABLES+=("roadrunner")
+fi
+if [ ${MEMCACHED_ENABLE:-false} ]; then
+    ENABLES+=("memcached")
+fi
+if [ ${MEILISEARCH_ENABLE:-false} ]; then
+    ENABLES+=("meilisearch")
+fi
+if [ ${MEILISEARCH_DASHBOARD_ENABLE:-false} ]; then
+    ENABLES+=("meilisearch-dashboard")
+fi
+
+
+SERVICES_ENABLE=$(IFS= ; echo "${ENABLES[*]}")
