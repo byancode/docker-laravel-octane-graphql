@@ -5,43 +5,40 @@ done
 
 ENABLES=()
 
-if [ ${PHPMYADMIN_ENABLE:-false} ]; then
+if [ true == $PHPMYADMIN_ENABLE ]; then
     ENABLES+=("phpmyadmin")
 fi
-if [ ${ECHO_ENABLE:-false} ]; then
+if [ true == $ECHO_ENABLE ]; then
     ENABLES+=("echo-server")
 fi
-if [ ${MONGODB_ENABLE:-false} ]; then
+if [ true == $MONGODB_ENABLE ]; then
     ENABLES+=("mongodb")
 fi
-if [ ${NGINX_ENABLE:-false} ]; then
+if [ true == $NGINX_ENABLE ]; then
     ENABLES+=("nginx")
 fi
-if [ ${MYSQL_ENABLE:-false} ]; then
+if [ true == $MYSQL_ENABLE ]; then
     ENABLES+=("mysql")
 fi
-if [ ${REDIS_ENABLE:-false} ]; then
+if [ true == $REDIS_ENABLE ]; then
     ENABLES+=("redis")
 fi
-if [ ${NODE_ENABLE:-false} ]; then
+if [ true == $NODE_ENABLE ]; then
     ENABLES+=("node")
 fi
-if [ ${MINIO_ENABLE:-false} ]; then
+if [ true == $MINIO_ENABLE ]; then
     ENABLES+=("minio")
 fi
-if [ ${MAILHOG_ENABLE:-false} ]; then
+if [ true == $MAILHOG_ENABLE ]; then
     ENABLES+=("mailhog")
 fi
-# if [ ${ROADRUNNER_ENABLE:-false} ]; then
-#     ENABLES+=("roadrunner")
-# fi
-if [ ${MEMCACHED_ENABLE:-false} ]; then
+if [ true == $MEMCACHED_ENABLE ]; then
     ENABLES+=("memcached")
 fi
-if [ ${MEILISEARCH_ENABLE:-false} ]; then
+if [ true == $MEILISEARCH_ENABLE ]; then
     ENABLES+=("meilisearch")
 fi
-if [ ${MEILISEARCH_DASHBOARD_ENABLE:-false} ]; then
+if [ true == $MEILISEARCH_DASHBOARD_ENABLE ]; then
     ENABLES+=("meilisearch-dashboard")
 fi
 

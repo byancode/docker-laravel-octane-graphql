@@ -2,32 +2,18 @@ version: '3.2'
 services:
   laravel:
     restart: unless-stopped
-    depends_on:
-      - meilisearch
-      - memcached
-      - mongodb
-      - mailhog
-      - mysql
-      - redis
-      - minio
+
+  nginx:
+    restart: unless-stopped
 
   mysql:
     restart: unless-stopped
 
   phpmyadmin:
     restart: unless-stopped
-    depends_on:
-      - mysql
 
   mongodb:
     restart: unless-stopped
-
-  nginx:
-    restart: unless-stopped
-    depends_on:
-      - echo-server
-      - mailhog
-      - laravel
 
   redis:
     restart: unless-stopped
@@ -37,15 +23,9 @@ services:
 
   echo-server:
     restart: unless-stopped
-    depends_on:
-      - redis
 
   node:
-    restart: unless-stopped
-    depends_on:
-      - mongodb
-      - mysql
-      - redis
+    restart: on-failure
 
   memcached:
     restart: unless-stopped

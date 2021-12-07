@@ -43,7 +43,7 @@ RUN dnf clean all
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 ARG ROADRUNNER_VERSION=latest
-COPY --from=spiralscout/roadrunner:$ROADRUNNER_VERSION /usr/bin/rr /usr/bin/rr
+COPY --from=spiralscout/roadrunner:latest /usr/bin/rr /usr/bin/rr
 
 # PHP Basic Config
 

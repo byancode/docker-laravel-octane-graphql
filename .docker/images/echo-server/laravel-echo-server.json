@@ -1,6 +1,6 @@
 {
     "authEndpoint": "/broadcasting/auth",
-    "authHost": "ECHO_SERVER_AUTH_HOST",
+    "authHost": "ECHO_AUTH_HOST",
     "database": "ECHO_DATABASE",
     "databaseConfig": {
         "redis": {

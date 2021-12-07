@@ -8,7 +8,7 @@ APP_HTTPS=0
 APP_DEBUG=1
 
 # App in production mode
-if [ $PRODUCTION ] ; then
+if [ $PRODUCTION == true ] ; then
     APP_NAME="laradhoc"
     APP_HOST="laradhoc.com"
     APP_HTTPS=1
@@ -64,7 +64,7 @@ PHP_ENABLE_XDEBUG=${APP_DEBUG:-0}
 # Set to 1 to enable OPCACHE
 PHP_ENABLE_OPCACHE=0
 # PHP in production mode
-if [ $PRODUCTION ] ; then
+if [ $PRODUCTION == true ] ; then
     PHP_ENABLE_XDEBUG=0
     PHP_ENABLE_OPCACHE=1
 fi
@@ -78,7 +78,7 @@ DATABASE_DATABASE="laradhoc"
 DATABASE_ROOT_USERNAME="root"
 DATABASE_ROOT_PASSWORD="password"
 # Database in production mode
-if [ $PRODUCTION ] ; then
+if [ $PRODUCTION == true ] ; then
     DATABASE_USERNAME="laradhoc"
 fi
 
@@ -123,6 +123,18 @@ MONGODB_PASSWORD="${DATABASE_PASSWORD}"
 MONGODB_DATABASE="${DATABASE_DATABASE}"
 MONGODB_ROOT_USER="${DATABASE_ROOT_USERNAME}"
 MONGODB_ROOT_PASSWORD="${DATABASE_ROOT_PASSWORD}"
+
+
+
+
+# Please see https://hub.docker.com/r/huggingface/mongoku
+MONGOKU_VERSION=latest
+MONGOKU_ENABLE=true
+# Use some customized default hosts (Default = localhost:27017)
+MONGOKU_DEFAULT_HOST="mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@mongodb:27017/?authMechanism=SCRAM-SHA-1"
+# Use another port. (Default = 3100)
+MONGOKU_SERVER_PORT=3100
+MONGOKU_COUNT_TIMEOUT=5000
 
 
 

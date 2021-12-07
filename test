@@ -1,0 +1,6 @@
+DEV=true
+if [ true == $DEV ]; then
+    echo "neeel";
+else
+    echo "yeeee";
+fi

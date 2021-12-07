@@ -22,8 +22,8 @@ ENV \
     ECHO_SERVER_AUTH_HOST=http://localhost \
     ECHO_SSL_CERT_PATH=/opt/laravel-echo-server/ssl/server.crt \
     ECHO_SSL_KEY_PATH=/opt/laravel-echo-server/ssl/server.key \
-    ECHO_SSL_CHAIN_PATH= \
-    ECHO_SSL_PASSPHRASE= \
+    ECHO_SSL_CHAIN_PATH="" \
+    ECHO_SSL_PASSPHRASE="" \
     ECHO_REDIS_PORT=6379 \
     ECHO_REDIS_HOSTNAME=redis \
     ECHO_ALLOW_CORS=true \
