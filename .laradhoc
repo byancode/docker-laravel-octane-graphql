@@ -1,3 +1,10 @@
+PRODUCTION=${PRODUCTION:-false}
+DEVELOPMENT=${DEVELOPMENT:-true}
+TESTING=${TESTING:-false}
+
+
+
+
 # The app name
 APP_NAME="Laradhoc"
 # The app hostname
@@ -8,7 +15,7 @@ APP_HTTPS=0
 APP_DEBUG=1
 
 # App in production mode
-if [ $PRODUCTION == true ] ; then
+if [ $PRODUCTION == true ]; then
     APP_NAME="laradhoc"
     APP_HOST="laradhoc.com"
     APP_HTTPS=1
@@ -18,7 +25,7 @@ fi
 
 
 
-if [ "${APP_HTTPS}" == "1" ] ; then
+if [ "${APP_HTTPS}" == "1" ]; then
     APP_SCHEME=https
 else
     APP_SCHEME=http
@@ -64,7 +71,7 @@ PHP_ENABLE_XDEBUG=${APP_DEBUG:-0}
 # Set to 1 to enable OPCACHE
 PHP_ENABLE_OPCACHE=0
 # PHP in production mode
-if [ $PRODUCTION == true ] ; then
+if [ $PRODUCTION == true ]; then
     PHP_ENABLE_XDEBUG=0
     PHP_ENABLE_OPCACHE=1
 fi
@@ -78,7 +85,7 @@ DATABASE_DATABASE="laradhoc"
 DATABASE_ROOT_USERNAME="root"
 DATABASE_ROOT_PASSWORD="password"
 # Database in production mode
-if [ $PRODUCTION == true ] ; then
+if [ $PRODUCTION == true ]; then
     DATABASE_USERNAME="laradhoc"
 fi
 
@@ -224,3 +231,5 @@ ECHO_ALLOW_CORS=true
 ECHO_ALLOW_ORIGIN="${ECHO_AUTH_HOST}"
 ECHO_ALLOW_METHODS="GET,POST,PUT,DELETE,OPTIONS"
 ECHO_ALLOW_HEADERS="Origin, Content-Type, X-Auth-Token, X-Requested-With, Accept, Authorization, X-CSRF-TOKEN, X-Socket-Id"
+
+exit 0;
