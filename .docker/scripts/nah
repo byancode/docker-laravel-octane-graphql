@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ${LARADHOC_BASE_PATH}/.docker/scripts/common/colors
+source ${LARACKER_BASE_PATH}/.docker/scripts/common/colors
 
 echo -e "\n${ERROR}!!!!!!!!! WARNING !!!!!!!!!${NC}\n"
 echo "- all volumes will be REMOVED (you'll loose your MySql data)"
@@ -14,17 +14,17 @@ if [ ! "$input" == "nah" ] ; then
     exit 0
 fi
 
-source ${LARADHOC_BASE_PATH}/.laradhoc
-source ${LARADHOC_BASE_PATH}/bin/buildenv
+source ${LARACKER_BASE_PATH}/.laracker
+source ${LARACKER_BASE_PATH}/bin/buildenv
 
 echo "Stopping all containers and removing volumes..."
 
 docker-compose \
---env-file ${LARADHOC_BASE_PATH}/bin/.env \
---project-directory ${LARADHOC_BASE_PATH} \
---file ${LARADHOC_BASE_PATH}/docker-compose.yml \
---file ${LARADHOC_BASE_PATH}/docker-compose.override.yml \
+--env-file ${LARACKER_BASE_PATH}/bin/.env \
+--project-directory ${LARACKER_BASE_PATH} \
+--file ${LARACKER_BASE_PATH}/docker-compose.yml \
+--file ${LARACKER_BASE_PATH}/docker-compose.override.yml \
 down -v
 
 echo "Deleting ${APP_SRC:-.} folder..."
-rm -rf ${LARADHOC_BASE_PATH}/${APP_SRC:-.}
+rm -rf ${LARACKER_BASE_PATH}/${APP_SRC:-.}

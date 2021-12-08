@@ -20,11 +20,11 @@ if [ "$1" == "--test" ] || [ "$1" == "--testing" ]; then
     TEST=$TESTING
 fi
 
-source ${LARADHOC_BASE_PATH}/.laradhoc
-source ${LARADHOC_BASE_PATH}/bin/buildenv
+source ${LARACKER_BASE_PATH}/.laracker
+source ${LARACKER_BASE_PATH}/bin/buildenv
 
-KEY_PATH="${LARADHOC_BASE_PATH}/.docker/images/nginx/ssl"
-ECHO_SSL_PATH="${LARADHOC_BASE_PATH}/.docker/images/echo-server/ssl"
+KEY_PATH="${LARACKER_BASE_PATH}/.docker/images/nginx/ssl"
+ECHO_SSL_PATH="${LARACKER_BASE_PATH}/.docker/images/echo-server/ssl"
 
 if [ $NGINX_ENABLE_HTTPS == 1 ] && ! [ -x "$(command -v openssl)" ]; then
     echo -e "\nError: openssl is not installed." >&2
@@ -43,9 +43,9 @@ if [ $NGINX_ENABLE_HTTPS == 1 ] ; then
 fi
 
 docker-compose \
---env-file ${LARADHOC_BASE_PATH}/bin/.env \
---project-directory ${LARADHOC_BASE_PATH} \
+--env-file ${LARACKER_BASE_PATH}/bin/.env \
+--project-directory ${LARACKER_BASE_PATH} \
 --project-name "${CONTAINER_PREFIX}" \
---file ${LARADHOC_BASE_PATH}/docker-compose.yml \
---file ${LARADHOC_BASE_PATH}/docker-compose.override.yml \
+--file ${LARACKER_BASE_PATH}/docker-compose.yml \
+--file ${LARACKER_BASE_PATH}/docker-compose.override.yml \
 up -d --build $@ -- $SERVICES_ENABLE

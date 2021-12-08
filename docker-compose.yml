@@ -71,7 +71,7 @@ services:
                 - MYSQL_IMAGE=${MYSQL_IMAGE}
         environment:
             MYSQL_DATABASE: ${MYSQL_DATABASE}
-            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_USER: ${MYSQL_USERNAME}
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
             MYSQL_INITDB_SKIP_TZINFO: 1
@@ -91,7 +91,7 @@ services:
             - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
             - PMA_HOST=mysql
             - PMA_PORT=${MYSQL_PORT:-3306}
-            - PMA_USER=${MYSQL_USER}
+            - PMA_USER=${MYSQL_USERNAME}
             - PMA_PASSWORD=${MYSQL_PASSWORD}
         ports:
             - ${PHPMYADMIN_PORT:-8080}:80
@@ -105,16 +105,16 @@ services:
             context: ./.docker/images/mongodb
             args:
                 - MONGODB_VERSION=${MONGODB_VERSION}
-                - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ROOT_USER}
+                - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ROOT_USERNAME}
                 - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ROOT_PASSWORD}
                 - MONGODB_DATABASE=${MONGODB_DATABASE}
-                - MONGODB_USER=${MONGODB_USER}
+                - MONGODB_USER=${MONGODB_USERNAME}
                 - MONGODB_PASSWORD=${MONGODB_PASSWORD}
         environment:
-            - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ROOT_USER}
+            - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ROOT_USERNAME}
             - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ROOT_PASSWORD}
             - MONGODB_DATABASE=${MONGODB_DATABASE}
-            - MONGODB_USER=${MONGODB_USER}
+            - MONGODB_USER=${MONGODB_USERNAME}
             - MONGODB_PASSWORD=${MONGODB_PASSWORD}
         expose:
             - 27017
@@ -203,7 +203,7 @@ services:
                     "-d",
                     "${POSTGRES_DATABASE}",
                     "-U",
-                    "${POSTGRES_USER}"
+                    "${POSTGRES_USERNAME}"
                 ]
             retries: 3
             timeout: 5s
@@ -252,7 +252,7 @@ services:
         ports:
             - ${MEILISEARCH_DASHBOARD_PORT:-8089}:80
         networks:
-            - laradhoc
+            - laracker
 
     meilisearch:
         container_name: ${CONTAINER_PREFIX}_meilisearch
@@ -263,7 +263,7 @@ services:
         volumes:
             - meilisearch-data:/data.ms
         networks:
-            - laradhoc
+            - laracker
         healthcheck:
             test:
                 [
@@ -297,5 +297,5 @@ volumes:
     meilisearch-data: null
 
 networks:
-    laradhoc:
+    laracker:
         driver: bridge

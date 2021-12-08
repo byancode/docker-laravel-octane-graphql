@@ -1,11 +1,11 @@
 #!/bin/bash
-source ${LARADHOC_BASE_PATH}/.laradhoc
-source ${LARADHOC_BASE_PATH}/bin/buildenv
+source ${LARACKER_BASE_PATH}/.laracker
+source ${LARACKER_BASE_PATH}/bin/buildenv
 
 docker-compose \
---env-file ${LARADHOC_BASE_PATH}/bin/.env \
---project-directory ${LARADHOC_BASE_PATH} \
+--env-file ${LARACKER_BASE_PATH}/bin/.env \
+--project-directory ${LARACKER_BASE_PATH} \
 --project-name "$CONTAINER_PREFIX" \
---file ${LARADHOC_BASE_PATH}/docker-compose.yml \
---file ${LARADHOC_BASE_PATH}/docker-compose.override.yml \
+--file ${LARACKER_BASE_PATH}/docker-compose.yml \
+--file ${LARACKER_BASE_PATH}/docker-compose.override.yml \
 run node $@
