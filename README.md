@@ -15,17 +15,17 @@ git clone https://github.com/byancode/docker-laravel-octane-graphql.git .
 > Ejecutamos el instalador
 
 ```bash
-./bin/laradhoc install
+./bin/laracker install
 ```
 
 > Inicializamos el proyecto
 
 ```bash
-./bin/laradhoc init
+./bin/laracker init
 ```
 
 > Ya podemos ingresar
 
 ```http
-http://laradhoc.test
+http://laracker.test
 ```
