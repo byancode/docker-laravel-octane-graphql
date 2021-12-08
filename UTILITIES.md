@@ -10,8 +10,8 @@ source ./bin/aliases
 > ejemplo de alias a utilizar
 
 ```bash
-# Laradhoc
-laradhoc init
+# Laracker
+laracker init
 lh init
 # ... etc
 

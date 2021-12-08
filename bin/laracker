@@ -8,7 +8,7 @@ ${SCRIPT_PATH}/aliases
 
 source ${LARACKER_BASE_PATH}/.docker/scripts/common/colors
 
-echo -e "\n${WHITE}Laradhoc ${INFO}${LARACKER_VERSION}${NC}\n" >&2
+echo -e "\n${WHITE}Laracker ${INFO}${LARACKER_VERSION}${NC}\n" >&2
 
 COMMAND=$1
 shift 1
@@ -26,14 +26,14 @@ if ! docker info > /dev/null 2>&1; then
 fi
 
 # Ensure .env has been created
-if [ ! -f ${LARACKER_BASE_PATH}/.laradhoc ]; then
-    echo -e "${ERROR}.laradhoc not found!${NC}\n" >&2
+if [ ! -f ${LARACKER_BASE_PATH}/.laracker ]; then
+    echo -e "${ERROR}.laracker not found!${NC}\n" >&2
     exit 1
 fi
 
 function join_by { local d=${1-} f=${2-}; if shift 2; then printf %s "$f" "${@/#/$d}"; fi; }
 
-source ${LARACKER_BASE_PATH}/.laradhoc
+source ${LARACKER_BASE_PATH}/.laracker
 source ${LARACKER_BASE_PATH}/bin/buildenv
 
 # Ensure containers are running
@@ -48,9 +48,9 @@ fi
 
 function check_if_is_running {
     if [ $EXEC == "no" ]; then
-        echo -e "${ERROR}Laradhoc is not running.${NC}" >&2
+        echo -e "${ERROR}Laracker is not running.${NC}" >&2
         echo "" >&2
-        echo -e "You may start Laradhoc using the following command:${INFO} ./vendor/bin/laradhoc up${NC}\n" >&2
+        echo -e "You may start Laracker using the following command:${INFO} ./vendor/bin/laracker up${NC}\n" >&2
         exit 1
     fi
 }

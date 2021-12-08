@@ -37,7 +37,7 @@ IDG=$(id -g)
 
 
 # Prefix for all container names. Don't use spaces.
-CONTAINER_PREFIX=laradhoc
+CONTAINER_PREFIX=laracker
 
 
 
@@ -82,12 +82,12 @@ fi
 
 DATABASE_USERNAME="user"
 DATABASE_PASSWORD="password"
-DATABASE_DATABASE="laradhoc"
+DATABASE_DATABASE="laracker"
 DATABASE_ROOT_USERNAME="root"
 DATABASE_ROOT_PASSWORD="password"
 # Database in production mode
 if [ $PRODUCTION == true ]; then
-    DATABASE_USERNAME="laradhoc"
+    DATABASE_USERNAME="laracker"
 fi
 
 
