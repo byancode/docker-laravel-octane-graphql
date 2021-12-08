@@ -2,9 +2,9 @@
 SCRIPT=`realpath $0`
 SCRIPT_PATH=`dirname $SCRIPT`
 
-alias laradhoc=$SCRIPT_PATH"/bin/laradhoc"
+alias laracker=$SCRIPT_PATH"/bin/laracker"
 alias artisan="php "$SCRIPT_PATH"/artisan"
 alias graphql=$SCRIPT_PATH"/bin/graphql"
 alias art="php "$SCRIPT_PATH"/artisan"
 alias gql=$SCRIPT_PATH"/bin/graphql"
-alias lh=$SCRIPT_PATH"/bin/laradhoc"
+alias lh=$SCRIPT_PATH"/bin/laracker"
