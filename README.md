@@ -1,3 +1,7 @@
+# LARACKER
+> es un spacio de trabajo especialmente para laravel con docker compose
+> facilitando los servicios necesarios para el buen funcionamiento de laravel
+
 # Instalacion
 
 > Creamos la carpeta del proyecto y accedemos
