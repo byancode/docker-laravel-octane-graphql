@@ -1,10 +1,7 @@
 #!/bin/bash
-SCRIPT=`realpath $0`
-SCRIPT_PATH=`dirname $SCRIPT`
 
-alias laracker=$SCRIPT_PATH"/bin/laracker"
-alias artisan="php "$SCRIPT_PATH"/artisan"
-alias graphql=$SCRIPT_PATH"/bin/graphql"
-alias art="php "$SCRIPT_PATH"/artisan"
-alias gql=$SCRIPT_PATH"/bin/graphql"
-alias lh=$SCRIPT_PATH"/bin/laracker"
+alias laracker=$PWD"/bin/laracker"
+alias artisan="php "$PWD"/artisan"
+alias art="php "$PWD"/artisan"
+alias lk=$PWD"/bin/laracker"
+
