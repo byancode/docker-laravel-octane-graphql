@@ -1,6 +1,7 @@
 # LARACKER
 > es un spacio de trabajo especialmente para laravel con docker compose
 > facilitando los servicios necesarios para el buen funcionamiento de laravel
+> este projecto es basado en github.com/eleftrik/laradhoc
 
 # Instalacion
 
