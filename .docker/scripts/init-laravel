@@ -1,7 +1,7 @@
 #!/bin/bash
 source ${LARADHOC_BASE_PATH}/.laradhoc
 
-_APP_SRC=${LARADHOC_BASE_PATH}/${APP_SRC}
+_APP_SRC=${LARADHOC_BASE_PATH}/${APP_SRC:-.}
 
 # Laravel .env file
 TARGET_ENV="${_APP_SRC}/.env"
@@ -36,14 +36,14 @@ ENV_FILE=$(sed "s/APP_NAME=.*/APP_NAME=\"${APP_NAME}\"/" <<< "${ENV_FILE}")
 ENV_FILE=$(sed "s/DB_DATABASE=.*/DB_DATABASE=\"${MYSQL_DATABASE}\"/" <<< "${ENV_FILE}")
 ENV_FILE=$(sed "s/DB_USERNAME=.*/DB_USERNAME=\"${MYSQL_USER}\"/" <<< "${ENV_FILE}")
 ENV_FILE=$(sed "s/DB_PASSWORD=.*/DB_PASSWORD=\"${MYSQL_PASSWORD}\"/" <<< "${ENV_FILE}")
-ENV_FILE=$(sed "s/DB_HOST=.*/DB_HOST=database/" <<< "${ENV_FILE}")
+ENV_FILE=$(sed "s/DB_HOST=.*/DB_HOST=mysql/" <<< "${ENV_FILE}")
 ENV_FILE=$(sed "s/MAIL_FROM_ADDRESS=.*/MAIL_FROM_ADDRESS=\"mail@${APP_HOST}\"/" <<< "${ENV_FILE}")
 ENV_FILE=$(sed "s/MAIL_FROM_NAME=.*/MAIL_FROM_NAME=\"${APP_NAME}\"/" <<< "${ENV_FILE}")
 ENV_FILE=$(sed "s/BROADCAST_DRIVER=.*/BROADCAST_DRIVER=redis/" <<< "${ENV_FILE}")
 ENV_FILE=$(sed "s/REDIS_HOST=.*/REDIS_HOST=redis/" <<< "${ENV_FILE}")
 ENV_FILE=$(sed "s/MAIL_HOST=.*/MAIL_HOST=mailhog/" <<< "${ENV_FILE}")
 ENV_FILE=$(sed "s/MAIL_PORT=.*/MAIL_PORT=1025/" <<< "${ENV_FILE}")
-ENV_FILE=$(sed "s/APP_URL=.*/APP_URL=\"http:\/\/${APP_HOST}\"/" <<< "${ENV_FILE}")
+ENV_FILE=$(sed "s/APP_URL=.*/APP_URL=\"${APP_SCHEME}:\/\/${APP_HOST}\"/" <<< "${ENV_FILE}")
 echo "${ENV_FILE}" > ${TARGET_ENV}
 
 if [ "$1" != "--new" ] ; then

@@ -1,3 +1,32 @@
 #!/bin/bash
+
+DEV=false
+PROD=false
+TEST=false
+TESTING=false
+PRODUCTION=false
+DEVELOPMENT=false
+
+if [ "$1" == "--prod" ] || [ "$1" == "--production" ]; then
+    PRODUCTION=true
+    PROD=$PRODUCTION
+fi
+if [ "$1" == "--dev" ] || [ "$1" == "--development" ]; then
+    DEVELOPMENT=true
+    DEV=$DEVELOPMENT
+fi
+if [ "$1" == "--test" ] || [ "$1" == "--testing" ]; then
+    TESTING=true
+    TEST=$TESTING
+fi
+
 source ${LARADHOC_BASE_PATH}/.laradhoc
-docker-compose --env-file ${LARADHOC_BASE_PATH}/.laradhoc --project-directory ${LARADHOC_BASE_PATH} --project-name "$CONTAINER_PREFIX" up -d $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+source ${LARADHOC_BASE_PATH}/bin/buildenv
+
+docker-compose \
+--env-file ${LARADHOC_BASE_PATH}/bin/.env \
+--project-directory ${LARADHOC_BASE_PATH} \
+--project-name "$CONTAINER_PREFIX" \
+--file ${LARADHOC_BASE_PATH}/docker-compose.yml \
+--file ${LARADHOC_BASE_PATH}/docker-compose.override.yml \
+up -d $@ -- $SERVICES_ENABLE

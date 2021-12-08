@@ -1,0 +1,55 @@
+echo "#!/usr/bin/env bash" > ${LARADHOC_BASE_PATH}/bin/.env
+cat ${LARADHOC_BASE_PATH}/.laradhoc | grep -o -E "\w+=" | grep -o -E "\w+" | sort -u | while read -r line; do
+    echo "$line=${!line@Q}" | awk '{gsub(/\\n/,"\\\n")}1' >> ${LARADHOC_BASE_PATH}/bin/.env
+done
+
+ENABLES=()
+
+if [ true == $PHPMYADMIN_ENABLE ]; then
+    ENABLES+=("phpmyadmin")
+fi
+if [ true == $RETHINKDB_ENABLE ]; then
+    ENABLES+=("rethinkdb")
+fi
+if [ true == $ECHO_ENABLE ]; then
+    ENABLES+=("echo-server")
+fi
+if [ true == $MONGODB_ENABLE ]; then
+    ENABLES+=("mongodb")
+fi
+if [ true == $NGINX_ENABLE ]; then
+    ENABLES+=("nginx")
+fi
+if [ true == $MYSQL_ENABLE ]; then
+    ENABLES+=("mysql")
+fi
+if [ true == $REDIS_ENABLE ]; then
+    ENABLES+=("redis")
+fi
+if [ true == $NODE_ENABLE ]; then
+    ENABLES+=("node")
+fi
+if [ true == $MINIO_ENABLE ]; then
+    ENABLES+=("minio")
+fi
+if [ true == $MONGOKU_ENABLE ]; then
+    ENABLES+=("mongoku")
+fi
+if [ true == $MAILHOG_ENABLE ]; then
+    ENABLES+=("mailhog")
+fi
+if [ true == $POSTGRES_ENABLE ]; then
+    ENABLES+=("postgres")
+fi
+if [ true == $MEMCACHED_ENABLE ]; then
+    ENABLES+=("memcached")
+fi
+if [ true == $MEILISEARCH_ENABLE ]; then
+    ENABLES+=("meilisearch")
+fi
+if [ true == $MEILISEARCH_DASHBOARD_ENABLE ]; then
+    ENABLES+=("meilisearch-dashboard")
+fi
+
+
+SERVICES_ENABLE=$(IFS=" "; echo "${ENABLES[*]}")

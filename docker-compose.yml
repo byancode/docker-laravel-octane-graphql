@@ -1,8 +1,63 @@
 version: '3.2'
 services:
-    database:
+    laravel:
         restart: unless-stopped
-        container_name: ${CONTAINER_PREFIX}_database
+        container_name: ${CONTAINER_PREFIX}_laravel
+        working_dir: /var/www/
+        expose:
+            - 8000
+        build:
+            context: ./.docker/images/laravel
+            args:
+                - TIMEZONE=${TIMEZONE}
+                - PHP_VERSION=${PHP_VERSION}
+                - OCTANE_SERVER=${OCTANE_SERVER}
+                - ENABLE_XDEBUG=${PHP_ENABLE_XDEBUG}
+                - PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT}
+                - ENABLE_OPCACHE=${PHP_ENABLE_OPCACHE}
+                - PHP_POST_MAX_SIZE=${PHP_POST_MAX_SIZE}
+                - ROADRUNNER_VERSION=${ROADRUNNER_VERSION}
+                - OCTANE_ENABLE_HTTPS=${OCTANE_ENABLE_HTTPS}
+                - PHP_MAX_EXECUTION_TIME=${PHP_MAX_EXECUTION_TIME}
+                - PHP_UPLOAD_MAX_FILESIZE=${PHP_UPLOAD_MAX_FILESIZE}
+        volumes:
+            - ${APP_SRC:-.}:/var/www/:cached
+        depends_on:
+            - meilisearch
+            - memcached
+            - mongodb
+            - mailhog
+            - mysql
+            - redis
+            - minio
+
+    nginx:
+        restart: unless-stopped
+        container_name: ${CONTAINER_PREFIX}_nginx
+        working_dir: /var/www/
+        build:
+            context: ./.docker/images/nginx
+            args:
+                - APP_HOST=${APP_HOST}
+                - NGINX_VERSION=${NGINX_VERSION}
+                - NGINX_ENABLE_HTTPS=${NGINX_ENABLE_HTTPS}
+        volumes:
+            - ${APP_SRC:-.}:/var/www/:cached
+            - ./.docker/images/nginx/nginx.conf:/etc/nginx/nginx.conf
+            - ./.docker/images/nginx/conf.d/:/etc/nginx/conf.d
+        ports:
+            - ${NGINX_PORT_80:-80}:80
+            - ${NGINX_PORT_443:-443}:443
+        depends_on:
+            - echo-server
+            - phpmyadmin
+            - mongoku
+            - mailhog
+            - laravel
+
+    mysql:
+        restart: unless-stopped
+        container_name: ${CONTAINER_PREFIX}_mysql
         tty: true
         command:
             [
@@ -13,7 +68,7 @@ services:
         build:
             context: ./.docker/images/mysql
             args:
-                - DATABASE_IMAGE=${DATABASE_IMAGE}
+                - MYSQL_IMAGE=${MYSQL_IMAGE}
         environment:
             MYSQL_DATABASE: ${MYSQL_DATABASE}
             MYSQL_USER: ${MYSQL_USER}
@@ -21,29 +76,27 @@ services:
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
             MYSQL_INITDB_SKIP_TZINFO: 1
         expose:
-            - "3306"
-        ports:
-            - ${MYSQL_PORT:-3306}:3306
+            - 3306
         volumes:
-            - sql-data:/var/lib/mysql
-        depends_on:
-            - nginx
+            - mysql-data:/var/lib/mysql
 
     phpmyadmin:
         restart: unless-stopped
         container_name: ${CONTAINER_PREFIX}_phpmyadmin
         build:
             context: ./.docker/images/phpmyadmin
+            args:
+                - PHPMYADMIN_VERSION=${PHPMYADMIN_VERSION}
         environment:
             - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-            - PMA_HOST=database
-            - PMA_PORT=3306
+            - PMA_HOST=mysql
+            - PMA_PORT=${MYSQL_PORT:-3306}
             - PMA_USER=${MYSQL_USER}
             - PMA_PASSWORD=${MYSQL_PASSWORD}
         ports:
             - ${PHPMYADMIN_PORT:-8080}:80
         depends_on:
-            - database
+            - mysql
 
     mongodb:
         restart: unless-stopped
@@ -51,6 +104,7 @@ services:
         build:
             context: ./.docker/images/mongodb
             args:
+                - MONGODB_VERSION=${MONGODB_VERSION}
                 - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ROOT_USER}
                 - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ROOT_PASSWORD}
                 - MONGODB_DATABASE=${MONGODB_DATABASE}
@@ -62,91 +116,186 @@ services:
             - MONGODB_DATABASE=${MONGODB_DATABASE}
             - MONGODB_USER=${MONGODB_USER}
             - MONGODB_PASSWORD=${MONGODB_PASSWORD}
-        ports:
-            - ${MONGODB_PORT:-27017}:27017
+        expose:
+            - 27017
         volumes:
             - mongodb-data:/data/db
 
-    nginx:
+    mongoku:
         restart: unless-stopped
-        container_name: ${CONTAINER_PREFIX}_nginx
-        working_dir: /var/www/
-        build:
-            context: ./.docker/images/nginx
-            args:
-                - APP_HOST=${APP_HOST}
-                - NGINX_ENABLE_HTTPS=${NGINX_ENABLE_HTTPS}
-        volumes:
-            - ${APP_SRC}:/var/www/:cached
-            - ./.docker/images/nginx/nginx.conf:/etc/nginx/nginx.conf
-            - ./.docker/images/nginx/conf.d/:/etc/nginx/conf.d
-        ports:
-            - ${NGINX_PORT_80:-80}:80
-            - ${NGINX_PORT_443:-443}:443
-        depends_on:
-            - php-fpm
-
-    php-fpm:
-        container_name: ${CONTAINER_PREFIX}_php-fpm
-        working_dir: /var/www/
+        container_name: ${CONTAINER_PREFIX}_mongoku
+        image: huggingface/mongoku:${MONGOKU_VERSION}
         expose:
-            - 8000
-        build:
-            context: ./.docker/images/php-fpm
-            args:
-                - TIMEZONE=${TIMEZONE}
-                - PHP_VERSION=${PHP_VERSION}
-                - OCTANE_HTTPS=${OCTANE_HTTPS}
-                - OCTANE_SERVER=${OCTANE_SERVER}
-                - ENABLE_XDEBUG=${ENABLE_XDEBUG}
-                - ENABLE_OPCACHE=${ENABLE_OPCACHE}
-                - PHP_MAX_EXECUTION_TIME=${PHP_MAX_EXECUTION_TIME}
-                - PHP_UPLOAD_MAX_FILESIZE=${PHP_UPLOAD_MAX_FILESIZE}
-                - PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT}
-                - PHP_POST_MAX_SIZE=${PHP_POST_MAX_SIZE}
-        volumes:
-            - ${APP_SRC}:/var/www/:cached
+            - 3100
+        environment:
+            - MONGOKU_COUNT_TIMEOUT=${MONGOKU_COUNT_TIMEOUT}
+            - MONGOKU_DEFAULT_HOST=${MONGOKU_DEFAULT_HOST}
+        ports:
+            - ${MONGOKU_PORT:-3100}:3100
+        depends_on:
+            - mongodb
 
     redis:
         restart: unless-stopped
         container_name: ${CONTAINER_PREFIX}_redis
         build:
             context: ./.docker/images/redis
+            args:
+                - REDIS_VERSION=${REDIS_VERSION}
         expose:
             - 6379
-        ports:
-            - ${REDIS_PORT:-6379}:6379
 
     mailhog:
         restart: unless-stopped
         container_name: ${CONTAINER_PREFIX}_mailhog
         build:
             context: ./.docker/images/mailhog
-        expose:
-            - "1025"
+            args:
+                - MAILHOG_VERSION=${MAILHOG_VERSION}
         ports:
             - ${MAILHOG_PORT:-8025}:8025
+        expose:
+            - 1025
+            - 8025
 
     echo-server:
         restart: unless-stopped
         container_name: ${CONTAINER_PREFIX}_echo-server
+        working_dir: /opt/laravel-echo-server
         build:
             context: ./.docker/images/echo-server
-        ports:
+            args:
+                - ECHO_PORT=${ECHO_PORT}
+                - NODE_VERSION=${ECHO_NODE_VERSION}
+                - ECHO_DEVMODE=${ECHO_DEVMODE}
+                - ECHO_DATABASE=${ECHO_DATABASE}
+                - ECHO_PROTOCOL=${ECHO_PROTOCOL}
+                - ECHO_AUTH_HOST=${ECHO_AUTH_HOST}
+                - ECHO_REDIS_PORT=${ECHO_REDIS_PORT}
+                - ECHO_REDIS_HOSTNAME=${ECHO_REDIS_HOSTNAME}
+                - ECHO_ALLOW_CORS=${ECHO_ALLOW_CORS}
+                - ECHO_ALLOW_ORIGIN=${ECHO_ALLOW_ORIGIN}
+                - ECHO_ALLOW_METHODS=${ECHO_ALLOW_METHODS}
+                - ECHO_ALLOW_HEADERS=${ECHO_ALLOW_HEADERS}
+        expose:
             - 6001
-        volumes:
-            - ./.docker/images/echo-server/laravel-echo-server.json:/opt/laravellaravel-echo-server.json:ro
         depends_on:
             - redis
+
+    postgres:
+        container_name: ${CONTAINER_PREFIX}_postgres
+        image: postgres:${POSTGRES_VERSION:-latest}
+        ports:
+            - ${POSTGRES_PORT:-5432}:5432
+        environment:
+            PGPASSWORD: ${POSTGRES_PASSWORD:-secret}
+            POSTGRES_DB: ${POSTGRES_DATABASE}
+            POSTGRES_USER: ${POSTGRES_USER:-root}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secret}
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "pg_isready",
+                    "-q",
+                    "-d",
+                    "${POSTGRES_DATABASE}",
+                    "-U",
+                    "${POSTGRES_USER}"
+                ]
+            retries: 3
+            timeout: 5s
 
     node:
         working_dir: /var/www/
         container_name: ${CONTAINER_PREFIX}_node
         build:
             context: ./.docker/images/node
+            args:
+                - NODE_VERSION=${NODE_VERSION}
         volumes:
             - ${APP_SRC:-.}:/var/www:cached
+        depends_on:
+            - rethinkdb
+            - mongodb
+            - mysql
+            - redis
 
+    minio:
+        container_name: ${CONTAINER_PREFIX}_minio
+        image: minio/minio:${MINIO_VERSION:-latest}
+        ports:
+            - '${MINIO_PORT:-9000}:9000'
+            - '${MINIO_CONSOLE_PORT:-8900}:8900'
+        environment:
+            - MINIO_ROOT_USER=${MINIO_ROOT_USER:-root}
+            - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-password}
+        volumes:
+            - minio-data:/data/minio
+        command: minio server /data/minio --console-address ":8900"
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "curl",
+                    "-f",
+                    "http://localhost:9000/minio/health/live"
+                ]
+            retries: 3
+            timeout: 5s
+
+    meilisearch-dashboard:
+        container_name: ${CONTAINER_PREFIX}_meilisearch-dashboard
+        image: shokme/meilisearch-dashboard:${MEILISEARCH_DASHBOARD_VERSION:-latest}
+        ports:
+            - ${MEILISEARCH_DASHBOARD_PORT:-8089}:80
+        networks:
+            - laradhoc
+
+    meilisearch:
+        container_name: ${CONTAINER_PREFIX}_meilisearch
+        image: getmeili/meilisearch:${MEILISEARCH_VERSION:-latest}
+        platform: linux/x86_64
+        expose:
+            - 7700
+        volumes:
+            - meilisearch-data:/data.ms
+        networks:
+            - laradhoc
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "wget",
+                    "--no-verbose",
+                    "--spider",
+                    "http://localhost:7700/health"
+                ]
+            retries: 3
+            timeout: 5s
+
+    memcached:
+        container_name: ${CONTAINER_PREFIX}_memcached
+        image: memcached:${MEMCACHED_VERSION:-alpine}
+        expose:
+            - 11211
+    rethinkdb:
+        container_name: ${CONTAINER_PREFIX}_rethinkdb
+        image: rethinkdb:${RETHINKDB_VERSION:-latest}
+        ports:
+            - ${RETHINKDB_PORT:-8087}:8080
+        volumes:
+            - rethinkdb-data:/data
 volumes:
-    sql-data: null
+    mysql-data: null
+    minio-data: null
     mongodb-data: null
+    postgres-data: null
+    rethinkdb-data: null
+    meilisearch-data: null
+
+networks:
+    laradhoc:
+        driver: bridge

@@ -38,11 +38,12 @@ RUN dnf -y install \
     php-json
 RUN dnf -y install \
     php-xmlrpc
-RUN dnf -y install nodejs unzip
+RUN dnf -y install unzip
 RUN dnf clean all
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
-COPY --from=spiralscout/roadrunner:2.4.2 /usr/bin/rr /usr/bin/rr
+ARG ROADRUNNER_VERSION=latest
+COPY --from=spiralscout/roadrunner:latest /usr/bin/rr /usr/bin/rr
 
 # PHP Basic Config
 
@@ -67,11 +68,12 @@ RUN sed -e 's/opcache.enable_cli=0/opcache.enable_cli='$ENABLE_OPCACHE'/' -i /et
 
 RUN chmod +x /usr/local/bin/entrypoint
 RUN chmod +x /etc/cron.d/schedule
+RUN chmod +x /usr/bin/rr
 
 ARG OCTANE_SERVER    swoole
 RUN sed -e 's/server=swoole/server='$OCTANE_SERVER'/' -i /etc/supervisord.conf
 
-CMD php-fpm
+CMD ["php-fpm"]
 
 EXPOSE 9000
 

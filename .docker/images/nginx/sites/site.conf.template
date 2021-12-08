@@ -3,8 +3,11 @@ map $http_upgrade $connection_upgrade {
     ''      close;
 }
 
-upstream backend {
-    server php-fpm:8000;
+upstream host1 {
+    server laravel:8000;
+}
+upstream host2 {
+    server echo-server:6001;
 }
 
 server {
@@ -42,8 +45,6 @@ server {
             set $suffix ?$query_string;
         }
 
-        #set $proxy_pass  php-fpm:8000;
-
         proxy_http_version 1.1;
         proxy_set_header Host $http_host;
         proxy_set_header Scheme $scheme;
@@ -53,7 +54,7 @@ server {
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
 
-        proxy_pass http://backend$suffix;
+        proxy_pass http://host1$suffix;
     }
 
     location ~ /\.(?!well-known).* {
@@ -61,7 +62,7 @@ server {
     }
 
     location /socket.io {
-        proxy_pass http://echo-server:6001;
+        proxy_pass http://host2;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "Upgrade";

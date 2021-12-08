@@ -1,21 +1,58 @@
+PRODUCTION=${PRODUCTION:-false}
+DEVELOPMENT=${DEVELOPMENT:-true}
+TESTING=${TESTING:-false}
+
+
+
+
 # The app name
 APP_NAME="Laradhoc"
 # The app hostname
-APP_HOST=laradhoc.test
-# Path of your codebase (without trailing slash)
-APP_SRC=.
+APP_HOST="laradhoc.test"
+# Set to 1 to enable HTTPS, 0 to run only over HTTP
+APP_HTTPS=0
+# Set to 1 to enable, 0 to disable
+APP_DEBUG=1
 
+# App in production mode
+if [ $PRODUCTION == true ]; then
+    APP_NAME="laradhoc"
+    APP_HOST="laradhoc.com"
+    APP_HTTPS=1
+    APP_DEBUG=0
+fi
+
+
+
+
+if [ "${APP_HTTPS}" == "1" ]; then
+    APP_SCHEME=https
+else
+    APP_SCHEME=http
+fi
 TIMEZONE=UTC
+UID=$(id -u)
+GID=$(id -g)
+
+
 
 # Prefix for all container names. Don't use spaces.
 CONTAINER_PREFIX=laradhoc
 
+
+
+
+# Nginx
+# Please see https://hub.docker.com/_/nginx
+NGINX_VERSION=latest
+NGINX_ENABLE=true
 # Set to 1 to enable HTTPS, 0 to run only over HTTP
-NGINX_ENABLE_HTTPS=0
+NGINX_ENABLE_HTTPS=${APP_HTTPS:-0}
 # Port on which Nginx is listening
 NGINX_PORT_80=80
 # Port on which Nginx is listening (HTTPS)
 NGINX_PORT_443=443
+
 
 
 # Specify which PHP version to use
@@ -30,67 +67,189 @@ PHP_MAX_EXECUTION_TIME=300
 PHP_UPLOAD_MAX_FILESIZE=200M
 PHP_MEMORY_LIMIT=512M
 PHP_POST_MAX_SIZE=200M
+# Set to 1 to enable XDebug
+PHP_ENABLE_XDEBUG=${APP_DEBUG:-0}
+# Set to 1 to enable OPCACHE
+PHP_ENABLE_OPCACHE=0
+# PHP in production mode
+if [ $PRODUCTION == true ]; then
+    PHP_ENABLE_XDEBUG=0
+    PHP_ENABLE_OPCACHE=1
+fi
 
-# Specify a Docker image for your database (MySQL or MariaDB)
-#
+
+
+
+DATABASE_USERNAME="user"
+DATABASE_PASSWORD="password"
+DATABASE_DATABASE="laradhoc"
+DATABASE_ROOT_USERNAME="root"
+DATABASE_ROOT_PASSWORD="password"
+# Database in production mode
+if [ $PRODUCTION == true ]; then
+    DATABASE_USERNAME="laradhoc"
+fi
+
+
+
+
+# MySQL / MariaDB PORT
+MYSQL_PORT=3306
 # Supported values:
-#   mysql
-#   mariadb
-#
-# You can specify a valid tag
-#
-# Please see https://hub.docker.com/_/mysql and https://hub.docker.com/_/mariadb
-# for valid tags.
-#
-# Examples:
+#   Please see https://hub.docker.com/_/mysql and https://hub.docker.com/_/mariadb
 #   mysql
 #   mariadb
 #   mysql:8
 #   mysql:latest
 #   mariadb:10.3
 #
-DATABASE_IMAGE=mysql:latest
-DATABASE_HOST="database"
-DATABASE_DATABASE="laradhoc"
-DATABASE_USERNAME="user"
-DATABASE_PASSWORD="password"
-DATABASE_ROOT_USERNAME="root"
-DATABASE_ROOT_PASSWORD="password"
-
-
-# MySQL / MariaDB PORT
-MYSQL_PORT=3306
-MYSQL_DATABASE="${DATABASE_DATABASE}"
+MYSQL_IMAGE=mysql:8
+MYSQL_ENABLE=true
 MYSQL_USER="${DATABASE_USERNAME}"
 MYSQL_PASSWORD="${DATABASE_PASSWORD}"
+MYSQL_DATABASE="${DATABASE_DATABASE}"
 MYSQL_ROOT_PASSWORD="${DATABASE_ROOT_PASSWORD}"
 
+
+
+
 # Port on which phpMyAdmin is listening
+PHPMYADMIN_VERSION=5.1.0
+PHPMYADMIN_ENABLE=true
 PHPMYADMIN_PORT=8082
 
 
+
+
 # MongoDB
+# Please see https://hub.docker.com/_/mongo
+MONGODB_VERSION=latest
+MONGODB_ENABLE=true
 MONGODB_PORT=27017
-MONGODB_ROOT_USER="${DATABASE_ROOT_USERNAME}"
-MONGODB_ROOT_PASSWORD="${DATABASE_ROOT_PASSWORD}"
-MONGODB_DATABASE="${DATABASE_DATABASE}"
 MONGODB_USER="${DATABASE_USERNAME}"
 MONGODB_PASSWORD="${DATABASE_PASSWORD}"
+MONGODB_DATABASE="${DATABASE_DATABASE}"
+MONGODB_ROOT_USER="${DATABASE_ROOT_USERNAME}"
+MONGODB_ROOT_PASSWORD="${DATABASE_ROOT_PASSWORD}"
 
 
-# Set to 1 to enable XDebug
-ENABLE_XDEBUG=1
 
+
+# Postgres
+# Please see https://hub.docker.com/_/postgres
+POSTGRES_VERSION=latest
+POSTGRES_ENABLE=true
+POSTGRES_PORT=5432
+POSTGRES_USER="${DATABASE_USERNAME}"
+POSTGRES_PASSWORD="${DATABASE_PASSWORD}"
+POSTGRES_DATABASE="${DATABASE_DATABASE}"
+POSTGRES_ROOT_USER="${DATABASE_ROOT_USERNAME}"
+POSTGRES_ROOT_PASSWORD="${DATABASE_ROOT_PASSWORD}"
+
+
+
+
+# Please see https://hub.docker.com/r/huggingface/mongoku
+MONGOKU_VERSION=latest
+MONGOKU_ENABLE=true
+MONGOKU_PORT=3100
+# Use some customized default hosts (Default = localhost:27017)
+MONGOKU_DEFAULT_HOST="mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongodb:27017/?authMechanism=SCRAM-SHA-1"
+MONGOKU_COUNT_TIMEOUT=5000
+
+
+
+
+# Please see https://hub.docker.com/_/rethinkdb
+RETHINKDB_VERSION=latest
+RETHINKDB_ENABLE=true
+RETHINKDB_PORT=8087
+
+
+
+
+# Please see https://hub.docker.com/_/redis
+REDIS_VERSION=latest
+REDIS_ENABLE=true
 REDIS_PORT=6379
 
+
+
+
+# Please see https://hub.docker.com/_/node
+NODE_VERSION=latest
+NODE_ENABLE=true
+
+
+
+
+# Please see https://hub.docker.com/r/spiralscout/roadrunner
+ROADRUNNER_VERSION=latest
+ROADRUNNER_ENABLE=true
+
+
+
+
+# Please see https://hub.docker.com/_/memcached
+MEMCACHED_VERSION=latest
+MEMCACHED_ENABLE=true
+
+
+
+
+# Please see https://hub.docker.com/r/getmeili/meilisearch
+MEILISEARCH_VERSION=latest
+MEILISEARCH_ENABLE=true
+
+
+
+
+# Please see https://hub.docker.com/r/shokme/meilisearch-dashboard
+MEILISEARCH_DASHBOARD_VERSION=latest
+MEILISEARCH_DASHBOARD_ENABLE=${MEILISEARCH_ENABLE:-true}
+MEILISEARCH_DASHBOARD_PORT=8089
+
+
+
+
+# Please see https://hub.docker.com/_/minio
+MINIO_VERSION=latest
+MINIO_ENABLE=true
+MINIO_PORT=9000
+MINIO_CONSOLE_PORT=8900
+MINIO_ROOT_USER="${DATABASE_ROOT_USERNAME}"
+MINIO_ROOT_PASSWORD="${DATABASE_ROOT_PASSWORD}"
+
+
+
+
 # Port on which MailHog replies (SMTP server for development purpose: https://github.com/mailhog/MailHog)
-MAILHOG_PORT=8081
+# Please see https://hub.docker.com/r/mailhog/mailhog
+MAILHOG_VERSION=latest
+MAILHOG_ENABLE=true
+MAILHOG_PORT=8025
 
 
-# Set to 1 to enable OPCACHE
-ENABLE_OPCACHE=1
+
 
 # Laravel Octane
-OCTANE_SERVER="swoole"
+OCTANE_SERVER=swoole
 # Set to 1 to enable HTTPS on Octane
-OCTANE_HTTPS=1
+OCTANE_ENABLE_HTTPS=1 # not supported
+
+
+
+
+ECHO_PORT=6001
+ECHO_ENABLE=true
+ECHO_DEVMODE=${APP_DEBUG:-true}
+ECHO_PROTOCOL="${APP_SCHEME}"
+ECHO_DATABASE=redis
+ECHO_NODE_VERSION=${NODE_VERSION}
+ECHO_AUTH_HOST="${ECHO_PROTOCOL}://${APP_HOST}"
+ECHO_REDIS_PORT=${REDIS_PORT:-6379}
+ECHO_REDIS_HOSTNAME=redis
+ECHO_ALLOW_CORS=true
+ECHO_ALLOW_ORIGIN="${ECHO_AUTH_HOST}"
+ECHO_ALLOW_METHODS="GET,POST,PUT,DELETE,OPTIONS"
+ECHO_ALLOW_HEADERS="Origin, Content-Type, X-Auth-Token, X-Requested-With, Accept, Authorization, X-CSRF-TOKEN, X-Socket-Id"

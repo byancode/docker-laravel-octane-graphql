@@ -1,9 +1,30 @@
 #!/bin/bash
 
-source ${LARADHOC_BASE_PATH}/.laradhoc
+DEV=false
+PROD=false
+TEST=false
+TESTING=false
+PRODUCTION=false
+DEVELOPMENT=false
 
+if [ "$1" == "--prod" ] || [ "$1" == "--production" ]; then
+    PRODUCTION=true
+    PROD=$PRODUCTION
+fi
+if [ "$1" == "--dev" ] || [ "$1" == "--development" ]; then
+    DEVELOPMENT=true
+    DEV=$DEVELOPMENT
+fi
+if [ "$1" == "--test" ] || [ "$1" == "--testing" ]; then
+    TESTING=true
+    TEST=$TESTING
+fi
+
+source ${LARADHOC_BASE_PATH}/.laradhoc
+source ${LARADHOC_BASE_PATH}/bin/buildenv
 
 KEY_PATH="${LARADHOC_BASE_PATH}/.docker/images/nginx/ssl"
+ECHO_SSL_PATH="${LARADHOC_BASE_PATH}/.docker/images/echo-server/ssl"
 
 if [ $NGINX_ENABLE_HTTPS == 1 ] && ! [ -x "$(command -v openssl)" ]; then
     echo -e "\nError: openssl is not installed." >&2
@@ -17,6 +38,14 @@ if [ $NGINX_ENABLE_HTTPS == 1 ] ; then
     -subj "/C=CA/ST=QC/O=Company, Inc./CN=${APP_HOST}" \
     -out ${KEY_PATH}/${APP_HOST}.crt \
     -keyout ${KEY_PATH}/${APP_HOST}.key 2>/dev/null
+    cp -f ${KEY_PATH}/${APP_HOST}.crt ${ECHO_SSL_PATH}/server.crt
+    cp -f ${KEY_PATH}/${APP_HOST}.key ${ECHO_SSL_PATH}/server.key
 fi
 
-docker-compose --env-file ${LARADHOC_BASE_PATH}/.laradhoc --project-directory ${LARADHOC_BASE_PATH} --project-name "$CONTAINER_PREFIX" up -d --build $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+docker-compose \
+--env-file ${LARADHOC_BASE_PATH}/bin/.env \
+--project-directory ${LARADHOC_BASE_PATH} \
+--project-name "${CONTAINER_PREFIX}" \
+--file ${LARADHOC_BASE_PATH}/docker-compose.yml \
+--file ${LARADHOC_BASE_PATH}/docker-compose.override.yml \
+up -d --build $@ -- $SERVICES_ENABLE

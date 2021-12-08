@@ -1,0 +1,40 @@
+version: '3.2'
+services:
+  laravel:
+    restart: unless-stopped
+
+  nginx:
+    restart: unless-stopped
+
+  mysql:
+    restart: unless-stopped
+
+  phpmyadmin:
+    restart: unless-stopped
+
+  mongodb:
+    restart: unless-stopped
+
+  redis:
+    restart: unless-stopped
+
+  mailhog:
+    restart: unless-stopped
+
+  echo-server:
+    restart: unless-stopped
+
+  node:
+    restart: on-failure
+
+  memcached:
+    restart: unless-stopped
+
+  minio:
+    restart: unless-stopped
+
+  meilisearch:
+    restart: unless-stopped
+
+  meilisearch-dashboard:
+    restart: unless-stopped
