@@ -4,11 +4,9 @@ FROM node:$NODE_VERSION
 WORKDIR /opt/laravel-echo-server
 
 COPY ./ssl ./ssl
-COPY ./entrypoint.sh ./entrypoint.sh
 COPY ./laravel-echo-server.json ./laravel-echo-server.json
 
 RUN npm install -g laravel-echo-server
-RUN chmod +x entrypoint.sh
 
 EXPOSE 6001
 
@@ -23,7 +21,7 @@ ARG ECHO_SSL_KEY_PATH=/opt/laravel-echo-server/ssl/server.key
 ARG ECHO_SSL_CHAIN_PATH=""
 ARG ECHO_SSL_PASSPHRASE=""
 ARG ECHO_REDIS_PORT=6379
-ARG ECHO_REDIS_HOSTNAME=redis
+ARG ECHO_REDIS_HOST=redis
 ARG ECHO_ALLOW_CORS=true
 ARG ECHO_ALLOW_ORIGIN=http://localhost
 ARG ECHO_ALLOW_METHODS="GET, POST"
@@ -35,7 +33,7 @@ RUN sed -i -e "s%ECHO_AUTH_HOST%$ECHO_AUTH_HOST%g" laravel-echo-server.json
 RUN sed -i -e "s%ECHO_PROTOCOL%$ECHO_PROTOCOL%g" laravel-echo-server.json
 RUN sed -i -e "s%\"ECHO_DEVMODE\"%$ECHO_DEVMODE%g" laravel-echo-server.json
 RUN sed -i -e "s%\"ECHO_REDIS_PORT\"%$ECHO_REDIS_PORT%g" laravel-echo-server.json
-RUN sed -i -e "s%ECHO_REDIS_HOSTNAME%$ECHO_REDIS_HOSTNAME%g" laravel-echo-server.json
+RUN sed -i -e "s%ECHO_REDIS_HOST%$ECHO_REDIS_HOST%g" laravel-echo-server.json
 RUN sed -i -e "s%ECHO_SSL_CERT_PATH%$ECHO_SSL_CERT_PATH%g" laravel-echo-server.json
 RUN sed -i -e "s%ECHO_SSL_KEY_PATH%$ECHO_SSL_KEY_PATH%g" laravel-echo-server.json
 RUN sed -i -e "s%ECHO_SSL_CHAIN_PATH%$ECHO_SSL_CHAIN_PATH%g" laravel-echo-server.json
