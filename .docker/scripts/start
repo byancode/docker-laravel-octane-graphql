@@ -29,4 +29,4 @@ docker-compose \
 --project-name "$CONTAINER_PREFIX" \
 --file ${LARACKER_BASE_PATH}/docker-compose.yml \
 --file ${LARACKER_BASE_PATH}/docker-compose.override.yml \
-up -d $@ -- $SERVICES_ENABLE
+up -d --no-deps $@ -- $SERVICES_ENABLE

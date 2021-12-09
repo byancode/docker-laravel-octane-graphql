@@ -1,7 +1,9 @@
 #!/bin/bash
 
+alias tinker="php "$PWD"/artisan tinker"
 alias laracker=$PWD"/bin/laracker"
 alias artisan="php "$PWD"/artisan"
 alias art="php "$PWD"/artisan"
 alias lk=$PWD"/bin/laracker"
-
+alias make=$PWD"/bin/make"
+alias mk=$PWD"/bin/make"

@@ -12,11 +12,8 @@
         "bootstrap": true,
         "CHANGELOG.md": true,
         "composer.lock": true,
-        "database/seeders": true,
         "LICENSE": true,
-        "phpunit.xml": true,
         "public": true,
-        "server.php": true,
-        "tests": true
+        "server.php": true
     }
 }

@@ -3,53 +3,57 @@ cat ${LARACKER_BASE_PATH}/.laracker | grep -o -E "\w+=" | grep -o -E "\w+" | sor
     echo "$line=${!line@Q}" | awk '{gsub(/\\n/,"\\\n")}1' >> ${LARACKER_BASE_PATH}/bin/.env
 done
 
-ENABLES=()
+if [ -z $SERVICES ]; then
+    SERVICES=()
+fi
 
 if [ true == $PHPMYADMIN_ENABLE ]; then
-    ENABLES+=("phpmyadmin")
+    SERVICES+=("phpmyadmin")
 fi
 if [ true == $RETHINKDB_ENABLE ]; then
-    ENABLES+=("rethinkdb")
+    SERVICES+=("rethinkdb")
 fi
 if [ true == $ECHO_ENABLE ]; then
-    ENABLES+=("echo-server")
+    SERVICES+=("echo-server")
 fi
 if [ true == $MONGODB_ENABLE ]; then
-    ENABLES+=("mongodb")
+    SERVICES+=("mongodb")
 fi
 if [ true == $NGINX_ENABLE ]; then
-    ENABLES+=("nginx")
+    SERVICES+=("nginx")
 fi
 if [ true == $MYSQL_ENABLE ]; then
-    ENABLES+=("mysql")
+    SERVICES+=("mysql")
 fi
 if [ true == $REDIS_ENABLE ]; then
-    ENABLES+=("redis")
+    SERVICES+=("redis")
 fi
 if [ true == $NODE_ENABLE ]; then
-    ENABLES+=("node")
+    SERVICES+=("node")
 fi
 if [ true == $MINIO_ENABLE ]; then
-    ENABLES+=("minio")
+    SERVICES+=("minio")
 fi
 if [ true == $MONGOKU_ENABLE ]; then
-    ENABLES+=("mongoku")
+    SERVICES+=("mongoku")
 fi
 if [ true == $MAILHOG_ENABLE ]; then
-    ENABLES+=("mailhog")
+    SERVICES+=("mailhog")
 fi
 if [ true == $POSTGRES_ENABLE ]; then
-    ENABLES+=("postgres")
+    SERVICES+=("postgres")
 fi
 if [ true == $MEMCACHED_ENABLE ]; then
-    ENABLES+=("memcached")
+    SERVICES+=("memcached")
 fi
 if [ true == $MEILISEARCH_ENABLE ]; then
-    ENABLES+=("meilisearch")
+    SERVICES+=("meilisearch")
 fi
 if [ true == $MEILISEARCH_DASHBOARD_ENABLE ]; then
-    ENABLES+=("meilisearch-dashboard")
+    SERVICES+=("meilisearch-dashboard")
 fi
 
+SERVICES+=("laravel")
 
-SERVICES_ENABLE=$(IFS=" "; echo "${ENABLES[*]}")
+
+SERVICES_ENABLE=$(IFS=" "; echo "${SERVICES[*]}")
