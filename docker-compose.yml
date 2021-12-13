@@ -11,13 +11,13 @@ services:
             args:
                 - TIMEZONE=${TIMEZONE}
                 - PHP_VERSION=${PHP_VERSION}
+                - OCTANE_HTTPS=${OCTANE_HTTPS}
                 - OCTANE_SERVER=${OCTANE_SERVER}
                 - ENABLE_XDEBUG=${PHP_ENABLE_XDEBUG}
                 - PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT}
                 - ENABLE_OPCACHE=${PHP_ENABLE_OPCACHE}
                 - PHP_POST_MAX_SIZE=${PHP_POST_MAX_SIZE}
                 - ROADRUNNER_VERSION=${ROADRUNNER_VERSION}
-                - OCTANE_ENABLE_HTTPS=${OCTANE_ENABLE_HTTPS}
                 - PHP_MAX_EXECUTION_TIME=${PHP_MAX_EXECUTION_TIME}
                 - PHP_UPLOAD_MAX_FILESIZE=${PHP_UPLOAD_MAX_FILESIZE}
         volumes:
@@ -89,10 +89,10 @@ services:
                 - PHPMYADMIN_VERSION=${PHPMYADMIN_VERSION}
         environment:
             - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - PMA_PASSWORD=${MYSQL_PASSWORD}
             - PMA_HOST=${MYSQL_HOST:-mysql}
             - PMA_PORT=${MYSQL_PORT:-3306}
             - PMA_USER=${MYSQL_USERNAME}
-            - PMA_PASSWORD=${MYSQL_PASSWORD}
         ports:
             - ${PHPMYADMIN_PORT:-8080}:80
         depends_on:
@@ -104,18 +104,18 @@ services:
         build:
             context: ./.docker/images/mongodb
             args:
-                - MONGODB_VERSION=${MONGODB_VERSION}
                 - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ROOT_USERNAME}
                 - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ROOT_PASSWORD}
-                - MONGODB_DATABASE=${MONGODB_DATABASE}
-                - MONGODB_USER=${MONGODB_USERNAME}
                 - MONGODB_PASSWORD=${MONGODB_PASSWORD}
+                - MONGODB_DATABASE=${MONGODB_DATABASE}
+                - MONGODB_VERSION=${MONGODB_VERSION}
+                - MONGODB_USER=${MONGODB_USERNAME}
         environment:
             - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ROOT_USERNAME}
             - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ROOT_PASSWORD}
             - MONGODB_DATABASE=${MONGODB_DATABASE}
-            - MONGODB_USER=${MONGODB_USERNAME}
             - MONGODB_PASSWORD=${MONGODB_PASSWORD}
+            - MONGODB_USER=${MONGODB_USERNAME}
         expose:
             - 27017
         volumes:
@@ -152,11 +152,11 @@ services:
             context: ./.docker/images/mailhog
             args:
                 - MAILHOG_VERSION=${MAILHOG_VERSION}
-        ports:
-            - ${MAILHOG_PORT:-8025}:8025
         expose:
             - 1025
             - 8025
+        ports:
+            - ${MAILHOG_PORT:-8025}:8025
 
     echo-server:
         restart: unless-stopped
@@ -281,11 +281,14 @@ services:
         image: memcached:${MEMCACHED_VERSION:-alpine}
         expose:
             - 11211
+
     rethinkdb:
         container_name: ${CONTAINER_PREFIX}_rethinkdb
         image: rethinkdb:${RETHINKDB_VERSION:-latest}
-        ports:
-            - ${RETHINKDB_PORT:-8087}:8080
+        expose:
+            - 28015
+            - 29015
+            - 8080
         volumes:
             - rethinkdb-data:/data
 volumes:

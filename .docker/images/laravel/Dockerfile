@@ -38,7 +38,9 @@ RUN dnf -y install \
     php-json
 RUN dnf -y install \
     php-xmlrpc
-RUN dnf -y install unzip
+RUN dnf -y install \
+    nodejs \
+    unzip
 RUN dnf clean all
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
@@ -56,22 +58,22 @@ RUN sed -e 's/memory_limit = 128M/memory_limit = '$PHP_MEMORY_LIMIT'/' -i /etc/p
 ARG PHP_POST_MAX_SIZE           8M
 RUN sed -e 's/post_max_size = 8M/post_max_size = '$PHP_POST_MAX_SIZE'/' -i /etc/php.ini
 
-COPY ./schedule /etc/cron.d/schedule
 COPY ./opcache.ini /etc/php.d/*-opcache.ini
 COPY ./opcache.blacklist /etc/php.d/opcache-default.blacklist
 COPY ./supervisord.conf /etc/supervisord.conf
 COPY ./entrypoint /usr/local/bin/entrypoint
 
 ARG ENABLE_OPCACHE 1
-RUN sed -e 's/opcache.enable=0/opcache.enable='$ENABLE_OPCACHE'/' -i /etc/php.d/*-opcache.ini
-RUN sed -e 's/opcache.enable_cli=0/opcache.enable_cli='$ENABLE_OPCACHE'/' -i /etc/php.d/*-opcache.ini
+RUN sed -e 's/opcache.enable=.*/opcache.enable='$ENABLE_OPCACHE'/' -i /etc/php.d/*-opcache.ini
+RUN sed -e 's/opcache.enable_cli=.*/opcache.enable_cli='$ENABLE_OPCACHE'/' -i /etc/php.d/*-opcache.ini
 
 RUN chmod +x /usr/local/bin/entrypoint
-RUN chmod +x /etc/cron.d/schedule
 RUN chmod +x /usr/bin/rr
 
 ARG OCTANE_SERVER    swoole
 RUN sed -e 's/server=swoole/server='$OCTANE_SERVER'/' -i /etc/supervisord.conf
+ARG ENABLE_XDEBUG    1
+RUN if [ $ENABLE_XDEBUG == 1 ]; then sed -e 's/:start/:start --watch/' -i /etc/supervisord.conf; fi
 
 CMD ["php-fpm"]
 

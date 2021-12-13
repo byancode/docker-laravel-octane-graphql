@@ -2,10 +2,25 @@
 source ${LARACKER_BASE_PATH}/bin/.env
 source ${LARACKER_BASE_PATH}/bin/buildenv
 
+if [ -f ${LARACKER_BASE_PATH}/bin/.stage ]; then
+    source ${LARACKER_BASE_PATH}/bin/.stage
+fi
+
+DOCKER_COMPOSE_LIST=("${LARACKER_BASE_PATH}/docker-compose.yml")
+if [ $STAGE == "DEV" ] || [ $STAGE == "TEST" ]; then
+    if [ -f "${LARACKER_BASE_PATH}/docker-compose.local.yml" ]; then
+        DOCKER_COMPOSE_LIST+=("${LARACKER_BASE_PATH}/docker-compose.local.yml")
+    fi
+fi
+if [ -f "${LARACKER_BASE_PATH}/docker-compose.override.yaml" ]; then
+    DOCKER_COMPOSE_LIST+=("${LARACKER_BASE_PATH}/docker-compose.override.yaml")
+fi
+DOCKER_COMPOSE_FILES=$(IFS="|"; echo "${DOCKER_COMPOSE_LIST[*]}")
+DOCKER_COMPOSE_FILES=$(echo "${DOCKER_COMPOSE_FILES}" | sed -e 's/|/ --file /')
+
 docker-compose \
 --env-file ${LARACKER_BASE_PATH}/bin/.env \
 --project-directory ${LARACKER_BASE_PATH} \
 --project-name "${CONTAINER_PREFIX}" \
---file ${LARACKER_BASE_PATH}/docker-compose.yml \
---file ${LARACKER_BASE_PATH}/docker-compose.override.yml \
+--file $(echo $DOCKER_COMPOSE_FILES) \
 exec php-fpm ./vendor/bin/phpunit $@

@@ -1,15 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
-initialStuff() {
-    php artisan event:cache; \
-    php artisan config:cache; \
-    php artisan route:cache;
-}
-
 if [ "$1" != "" ]; then
     exec "$@"
 else
-    initialStuff
+    npm install;
     supervisord -n -c /etc/supervisord.conf
 fi

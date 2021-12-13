@@ -1,0 +1,26 @@
+version: '3.2'
+services:
+  mysql:
+    ports:
+      - ${MYSQL_PORT:-3306}:3306
+  redis:
+    ports:
+      - ${REDIS_PORT:-6379}:6379
+  mailhog:
+    ports:
+      - ${MAILHOG_PORT:-8025}:8025
+      - ${MAIL_PORT:-1025}:1025
+  postgres:
+    ports:
+      - ${POSTGRES_PORT:-5432}:5432
+  mongodb:
+    ports:
+      - ${MONGODB_PORT:-27017}:27017
+  memcached:
+    ports:
+      - ${MEMCACHED_PORT:-11211}:11211
+  rethinkdb:
+    ports:
+      - ${RETHINKDB_INTRACLOUSTER_PORT:-29015}:29015
+      - ${RETHINKDB_PANEL_PORT:-8087}:8080
+      - ${RETHINKDB_PORT:-28015}:28015

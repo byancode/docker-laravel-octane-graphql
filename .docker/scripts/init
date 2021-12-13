@@ -1,24 +1,19 @@
 #!/bin/bash
 
-DEV=false
-PROD=false
-TEST=false
-TESTING=false
-PRODUCTION=false
-DEVELOPMENT=false
+STAGE=DEV
 
 if [ "$1" == "--prod" ] || [ "$1" == "--production" ]; then
-    PRODUCTION=true
-    PROD=$PRODUCTION
+    STAGE=PROD
 fi
 if [ "$1" == "--dev" ] || [ "$1" == "--development" ]; then
-    DEVELOPMENT=true
-    DEV=$DEVELOPMENT
+    STAGE=DEV
 fi
 if [ "$1" == "--test" ] || [ "$1" == "--testing" ]; then
-    TESTING=true
-    TEST=$TESTING
+    STAGE=TEST
 fi
+
+echo "STAGE="$STAGE > ${LARACKER_BASE_PATH}/bin/.stage
+echo "STAGE MODE: "$STAGE
 
 source ${LARACKER_BASE_PATH}/.laracker
 source ${LARACKER_BASE_PATH}/bin/buildenv
@@ -42,10 +37,23 @@ if [ $NGINX_ENABLE_HTTPS == 1 ] ; then
     cp -f ${KEY_PATH}/${APP_HOST}.key ${ECHO_SSL_PATH}/server.key
 fi
 
+DOCKER_COMPOSE_LIST=("${LARACKER_BASE_PATH}/docker-compose.yml")
+if [ $STAGE == "DEV" ] || [ $STAGE == "TEST" ]; then
+    if [ -f "${LARACKER_BASE_PATH}/docker-compose.local.yml" ]; then
+        DOCKER_COMPOSE_LIST+=("${LARACKER_BASE_PATH}/docker-compose.local.yml")
+    fi
+fi
+if [ -f "${LARACKER_BASE_PATH}/docker-compose.override.yaml" ]; then
+    DOCKER_COMPOSE_LIST+=("${LARACKER_BASE_PATH}/docker-compose.override.yaml")
+fi
+DOCKER_COMPOSE_FILES=$(IFS="|"; echo "${DOCKER_COMPOSE_LIST[*]}")
+DOCKER_COMPOSE_FILES=$(echo "${DOCKER_COMPOSE_FILES}" | sed -e 's/|/ --file /')
+
+source ${LARACKER_BASE_PATH}/bin/envfiles
+
 docker-compose \
 --env-file ${LARACKER_BASE_PATH}/bin/.env \
 --project-directory ${LARACKER_BASE_PATH} \
 --project-name "${CONTAINER_PREFIX}" \
---file ${LARACKER_BASE_PATH}/docker-compose.yml \
---file ${LARACKER_BASE_PATH}/docker-compose.override.yml \
-up -d --build --no-deps $@ -- $SERVICES_ENABLE
+--file $(echo $DOCKER_COMPOSE_FILES) \
+up -d --build --no-deps -- $SERVICES_ENABLE
